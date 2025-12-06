@@ -1,15 +1,10 @@
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
+
 import js from '@eslint/js';
 import nextPlugin from '@next/eslint-plugin-next';
 import reactPlugin from 'eslint-plugin-react';
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
 import typescriptPlugin from '@typescript-eslint/eslint-plugin';
 import typescriptParser from '@typescript-eslint/parser';
-import globals from 'globals';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
 export default [
   js.configs.recommended,
@@ -23,11 +18,6 @@ export default [
         ecmaFeatures: {
           jsx: true,
         },
-      },
-      globals: {
-        ...globals.node,
-        ...globals.browser,
-        ...globals.es2021,
       },
     },
     plugins: {

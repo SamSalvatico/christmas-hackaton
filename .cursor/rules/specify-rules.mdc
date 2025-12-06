@@ -5,6 +5,7 @@ Auto-generated from all feature plans. Last updated: 2025-12-06
 ## Active Technologies
 - TypeScript 5.9+ (strict mode) + Next.js 16.0.7, React 19.2.1, HeroUI 2.8.5, Node.js 24+ (002-countries-dropdown)
 - In-memory cache (Map-based with TTL) - no persistent storage required (002-countries-dropdown)
+- TypeScript 5.9+ (strict mode) + Next.js 16.0.7, React 19.2.1, OpenAI SDK (openai), Node.js 24+ (003-country-dishes)
 
 - TypeScript 5.1+ (strict mode), Node.js 24 + Next.js 16, React (latest), HeroUI, TypeScrip (001-ssr-web-app)
 
@@ -24,6 +25,7 @@ npm test && npm run lint
 TypeScript 5.1+ (strict mode), Node.js 24: Follow standard conventions
 
 ## Recent Changes
+- 003-country-dishes: Added TypeScript 5.9+ (strict mode) + Next.js 16.0.7, React 19.2.1, OpenAI SDK (openai), Node.js 24+
 - 002-countries-dropdown: Added TypeScript 5.9+ (strict mode) + Next.js 16.0.7, React 19.2.1, HeroUI 2.8.5, Node.js 24+
 
 - 001-ssr-web-app: Added TypeScript 5.1+ (strict mode), Node.js 24 + Next.js 16, React (latest), HeroUI, TypeScrip

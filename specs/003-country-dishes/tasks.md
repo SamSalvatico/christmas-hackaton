@@ -28,10 +28,10 @@
 
 **Purpose**: Project initialization and dependency installation
 
-- [ ] T001 Install OpenAI SDK package by running `npm install openai` in project root
-- [ ] T002 Create `.env.local` file in project root with `OPENAI_API_KEY` placeholder (if not exists)
-- [ ] T003 [P] Create `.env.sample` file in project root with example environment variable `OPENAI_API_KEY=sk-your-api-key-here` as documentation
-- [ ] T004 [P] Add `.env.local` to `.gitignore` if not already present to prevent committing API keys
+- [x] T001 Install OpenAI SDK package by running `npm install openai` in project root
+- [x] T002 Create `.env.local` file in project root with `OPENAI_API_KEY` placeholder (if not exists)
+- [x] T003 [P] Create `.env.sample` file in project root with example environment variable `OPENAI_API_KEY=sk-your-api-key-here` as documentation
+- [x] T004 [P] Add `.env.local` to `.gitignore` if not already present to prevent committing API keys
 
 **Checkpoint**: Dependencies installed and environment variable configured
 
@@ -43,12 +43,12 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T005 Create TypeScript type definitions for Dish entity in `lib/types/dishes.ts` with name, description, ingredients, type, country fields
-- [ ] T006 [P] Create TypeScript type definitions for DishesResponse in `lib/types/dishes.ts` with entry, main, dessert fields (each Dish | null)
-- [ ] T007 [P] Create TypeScript type definitions for DishesApiRequest in `lib/types/dishes.ts` with country field
-- [ ] T008 [P] Create TypeScript type definitions for DishesApiSuccessResponse and DishesApiErrorResponse in `lib/types/dishes.ts`
-- [ ] T009 [P] Create TypeScript union type DishesApiResponse in `lib/types/dishes.ts` combining success and error responses
-- [ ] T010 Export all dish types from `lib/types/dishes.ts` and update `lib/types/index.ts` to export from dishes module
+- [x] T005 Create TypeScript type definitions for Dish entity in `lib/types/dishes.ts` with name, description, ingredients, type, country fields
+- [x] T006 [P] Create TypeScript type definitions for DishesResponse in `lib/types/dishes.ts` with entry, main, dessert fields (each Dish | null)
+- [x] T007 [P] Create TypeScript type definitions for DishesApiRequest in `lib/types/dishes.ts` with country field
+- [x] T008 [P] Create TypeScript type definitions for DishesApiSuccessResponse and DishesApiErrorResponse in `lib/types/dishes.ts`
+- [x] T009 [P] Create TypeScript union type DishesApiResponse in `lib/types/dishes.ts` combining success and error responses
+- [x] T010 Export all dish types from `lib/types/dishes.ts` and update `lib/types/index.ts` to export from dishes module
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
@@ -62,23 +62,23 @@
 
 ### Implementation for User Story 1
 
-- [ ] T011 [US1] Create OpenAI service module in `lib/api/openai-service.ts` with function to initialize OpenAI client using `OPENAI_API_KEY` environment variable
-- [ ] T012 [US1] Implement `buildDishPrompt` function in `lib/api/openai-service.ts` that creates structured prompt with explicit JSON format requirements for country dishes
-- [ ] T013 [US1] Implement `buildRefinedDishPrompt` function in `lib/api/openai-service.ts` that creates refined prompt with more explicit format requirements for retry scenarios
-- [ ] T014 [US1] Implement `queryDishesForCountry` function in `lib/api/openai-service.ts` that calls OpenAI API with structured prompt and returns parsed JSON response
-- [ ] T015 [US1] Implement `parseDishResponse` function in `lib/api/openai-service.ts` that parses OpenAI JSON response string into DishesResponse type
-- [ ] T016 [US1] Implement `validateDishData` function in `lib/api/openai-service.ts` that validates DishesResponse has at least one non-null category and all non-null dishes have required fields
-- [ ] T017 [US1] Implement `queryDishesWithRetry` function in `lib/api/openai-service.ts` that attempts query, validates response, and retries with refined prompt if invalid (max 1 retry)
-- [ ] T018 [US1] Add error handling in `lib/api/openai-service.ts` for OpenAI API errors (rate limits, timeouts, service unavailable) with user-friendly error messages
-- [ ] T019 [US1] Create API route handler in `app/api/dishes/route.ts` that exports POST function to handle dish queries
-- [ ] T020 [US1] Implement request validation in `app/api/dishes/route.ts` POST handler to validate country parameter is present and non-empty
-- [ ] T021 [US1] Implement cache check logic in `app/api/dishes/route.ts` POST handler using existing cache utility with key pattern `dishes:{countryName}` and 20-minute TTL
-- [ ] T022 [US1] Implement cache hit response in `app/api/dishes/route.ts` POST handler that returns cached DishesResponse if valid and not expired
-- [ ] T023 [US1] Implement OpenAI query logic in `app/api/dishes/route.ts` POST handler that calls `queryDishesWithRetry` when cache miss or expired
-- [ ] T024 [US1] Implement cache storage logic in `app/api/dishes/route.ts` POST handler that stores valid DishesResponse in cache with 20-minute TTL (only if validation passes)
-- [ ] T025 [US1] Implement error response handling in `app/api/dishes/route.ts` POST handler for no dishes found, rate limits, service unavailable, and invalid responses after retry
-- [ ] T026 [US1] Add JSDoc comments to all functions in `lib/api/openai-service.ts` explaining purpose, parameters, and return values
-- [ ] T027 [US1] Add JSDoc comments to POST handler in `app/api/dishes/route.ts` explaining request flow, caching, and error handling
+- [x] T011 [US1] Create OpenAI service module in `lib/api/openai-service.ts` with function to initialize OpenAI client using `OPENAI_API_KEY` environment variable
+- [x] T012 [US1] Implement `buildDishPrompt` function in `lib/api/openai-service.ts` that creates structured prompt with explicit JSON format requirements for country dishes
+- [x] T013 [US1] Implement `buildRefinedDishPrompt` function in `lib/api/openai-service.ts` that creates refined prompt with more explicit format requirements for retry scenarios
+- [x] T014 [US1] Implement `queryDishesForCountry` function in `lib/api/openai-service.ts` that calls OpenAI API with structured prompt and returns parsed JSON response
+- [x] T015 [US1] Implement `parseDishResponse` function in `lib/api/openai-service.ts` that parses OpenAI JSON response string into DishesResponse type
+- [x] T016 [US1] Implement `validateDishData` function in `lib/api/openai-service.ts` that validates DishesResponse has at least one non-null category and all non-null dishes have required fields
+- [x] T017 [US1] Implement `queryDishesWithRetry` function in `lib/api/openai-service.ts` that attempts query, validates response, and retries with refined prompt if invalid (max 1 retry)
+- [x] T018 [US1] Add error handling in `lib/api/openai-service.ts` for OpenAI API errors (rate limits, timeouts, service unavailable) with user-friendly error messages
+- [x] T019 [US1] Create API route handler in `app/api/dishes/route.ts` that exports POST function to handle dish queries
+- [x] T020 [US1] Implement request validation in `app/api/dishes/route.ts` POST handler to validate country parameter is present and non-empty
+- [x] T021 [US1] Implement cache check logic in `app/api/dishes/route.ts` POST handler using existing cache utility with key pattern `dishes:{countryName}` and 20-minute TTL
+- [x] T022 [US1] Implement cache hit response in `app/api/dishes/route.ts` POST handler that returns cached DishesResponse if valid and not expired
+- [x] T023 [US1] Implement OpenAI query logic in `app/api/dishes/route.ts` POST handler that calls `queryDishesWithRetry` when cache miss or expired
+- [x] T024 [US1] Implement cache storage logic in `app/api/dishes/route.ts` POST handler that stores valid DishesResponse in cache with 20-minute TTL (only if validation passes)
+- [x] T025 [US1] Implement error response handling in `app/api/dishes/route.ts` POST handler for no dishes found, rate limits, service unavailable, and invalid responses after retry
+- [x] T026 [US1] Add JSDoc comments to all functions in `lib/api/openai-service.ts` explaining purpose, parameters, and return values
+- [x] T027 [US1] Add JSDoc comments to POST handler in `app/api/dishes/route.ts` explaining request flow, caching, and error handling
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently. API endpoint should return dishes for a country with proper caching and error handling.
 
@@ -92,14 +92,14 @@
 
 ### Implementation for User Story 2
 
-- [ ] T028 [US2] Add state management in `app/page.tsx` for dishes data (DishesResponse | null), loading state (boolean), and error state (string | null)
-- [ ] T029 [US2] Implement `fetchDishes` function in `app/page.tsx` that calls POST `/api/dishes` endpoint with selected country and handles response
-- [ ] T030 [US2] Implement loading state display in `app/page.tsx` that shows loading indicator while querying OpenAI API
-- [ ] T031 [US2] Implement error state display in `app/page.tsx` that shows user-friendly error message when dish query fails
-- [ ] T032 [US2] Implement JSON display section in `app/page.tsx` that renders DishesResponse as formatted JSON using `<pre>` tag with `JSON.stringify(data, null, 2)`
-- [ ] T033 [US2] Implement conditional rendering in `app/page.tsx` that displays JSON only when dishes data is available, shows loading during fetch, and shows error on failure
-- [ ] T034 [US2] Add ingredient truncation utility function in `app/page.tsx` or separate utility that returns first 8 ingredients plus "There's more!" message if list exceeds 8 items
-- [ ] T035 [US2] Update JSON display in `app/page.tsx` to apply ingredient truncation when rendering dishes data (for future UI enhancement, keep in JSON for now)
+- [x] T028 [US2] Add state management in `app/page.tsx` for dishes data (DishesResponse | null), loading state (boolean), and error state (string | null)
+- [x] T029 [US2] Implement `fetchDishes` function in `app/page.tsx` that calls POST `/api/dishes` endpoint with selected country and handles response
+- [x] T030 [US2] Implement loading state display in `app/page.tsx` that shows loading indicator while querying OpenAI API
+- [x] T031 [US2] Implement error state display in `app/page.tsx` that shows user-friendly error message when dish query fails
+- [x] T032 [US2] Implement JSON display section in `app/page.tsx` that renders DishesResponse as formatted JSON using `<pre>` tag with `JSON.stringify(data, null, 2)`
+- [x] T033 [US2] Implement conditional rendering in `app/page.tsx` that displays JSON only when dishes data is available, shows loading during fetch, and shows error on failure
+- [x] T034 [US2] Add ingredient truncation utility function in `app/page.tsx` or separate utility that returns first 8 ingredients plus "There's more!" message if list exceeds 8 items
+- [x] T035 [US2] Update JSON display in `app/page.tsx` to apply ingredient truncation when rendering dishes data (for future UI enhancement, keep in JSON for now)
 
 **Checkpoint**: At this point, User Stories 1 AND 2 should both work independently. Home page should display JSON content after dish query completes.
 
@@ -113,13 +113,13 @@
 
 ### Implementation for User Story 3
 
-- [ ] T036 [US3] Update `SantaSearchButton` component in `components/features/santa-search-button.tsx` to accept `onSearch` callback prop that receives country name
-- [ ] T037 [US3] Update `handleClick` function in `components/features/santa-search-button.tsx` to call `onSearch` callback with selected country when button is clicked
-- [ ] T038 [US3] Update home page in `app/page.tsx` to pass `handleDishSearch` function to `SantaSearchButton` component via `onSearch` prop
-- [ ] T039 [US3] Implement `handleDishSearch` function in `app/page.tsx` that clears previous results, sets loading state, and calls `fetchDishes` with selected country
-- [ ] T040 [US3] Update home page in `app/page.tsx` to clear previous dish results when new search is initiated (set dishes data to null before new fetch)
-- [ ] T041 [US3] Verify `SantaSearchButton` remains disabled when no country is selected in `components/features/santa-search-button.tsx` (existing behavior should be maintained)
-- [ ] T042 [US3] Test full integration flow: select country → click Santa Search → verify API call → verify JSON display → verify loading and error states
+- [x] T036 [US3] Update `SantaSearchButton` component in `components/features/santa-search-button.tsx` to accept `onSearch` callback prop that receives country name
+- [x] T037 [US3] Update `handleClick` function in `components/features/santa-search-button.tsx` to call `onSearch` callback with selected country when button is clicked
+- [x] T038 [US3] Update home page in `app/page.tsx` to pass `handleDishSearch` function to `SantaSearchButton` component via `onSearch` prop
+- [x] T039 [US3] Implement `handleDishSearch` function in `app/page.tsx` that clears previous results, sets loading state, and calls `fetchDishes` with selected country
+- [x] T040 [US3] Update home page in `app/page.tsx` to clear previous dish results when new search is initiated (set dishes data to null before new fetch)
+- [x] T041 [US3] Verify `SantaSearchButton` remains disabled when no country is selected in `components/features/santa-search-button.tsx` (existing behavior should be maintained)
+- [x] T042 [US3] Test full integration flow: select country → click Santa Search → verify API call → verify JSON display → verify loading and error states
 
 **Checkpoint**: All user stories should now be independently functional. Full user journey from country selection to dish display should work end-to-end.
 
@@ -129,16 +129,16 @@
 
 **Purpose**: Improvements that affect multiple user stories
 
-- [ ] T043 [P] Update `README.md` in project root to document OpenAI API key configuration requirement
-- [ ] T044 [P] Add environment variable documentation in `README.md` explaining `OPENAI_API_KEY` setup and reference to `.env.sample` file
-- [ ] T045 [P] Verify all TypeScript types are properly exported and imported across modules
-- [ ] T046 [P] Run `npm run lint` to check for linting errors and fix any issues
-- [ ] T047 [P] Verify code follows project constitution principles (modular architecture, code readability, user-centric design)
-- [ ] T048 [P] Test cache expiration behavior: wait 20+ minutes and verify fresh data is fetched
-- [ ] T049 [P] Test retry logic: simulate invalid response and verify refined query is attempted
-- [ ] T050 [P] Test error scenarios: rate limits, service unavailable, no dishes found
-- [ ] T051 [P] Verify ingredient truncation logic works correctly for lists with 8 or fewer items vs more than 8 items
-- [ ] T052 [P] Run quickstart.md validation to ensure all setup steps work correctly
+- [x] T043 [P] Update `README.md` in project root to document OpenAI API key configuration requirement
+- [x] T044 [P] Add environment variable documentation in `README.md` explaining `OPENAI_API_KEY` setup and reference to `.env.sample` file
+- [x] T045 [P] Verify all TypeScript types are properly exported and imported across modules
+- [x] T046 [P] Run `npm run lint` to check for linting errors and fix any issues
+- [x] T047 [P] Verify code follows project constitution principles (modular architecture, code readability, user-centric design)
+- [ ] T048 [P] Test cache expiration behavior: wait 20+ minutes and verify fresh data is fetched - MANUAL TEST REQUIRED
+- [ ] T049 [P] Test retry logic: simulate invalid response and verify refined query is attempted - MANUAL TEST REQUIRED
+- [ ] T050 [P] Test error scenarios: rate limits, service unavailable, no dishes found - MANUAL TEST REQUIRED
+- [x] T051 [P] Verify ingredient truncation logic works correctly for lists with 8 or fewer items vs more than 8 items
+- [ ] T052 [P] Run quickstart.md validation to ensure all setup steps work correctly - MANUAL TEST REQUIRED
 
 ---
 

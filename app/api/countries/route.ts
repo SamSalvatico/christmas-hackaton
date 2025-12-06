@@ -136,7 +136,7 @@ export async function GET(_request: NextRequest): Promise<NextResponse> {
 
       return NextResponse.json(response, { status: 500 });
     }
-  } catch (error) {
+  } catch {
     // Unexpected error
     const response: CountriesApiResponse = {
       success: false,

@@ -9,24 +9,30 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "eslint . --ext .ts,.tsx,.js,.jsx"
   },
   "dependencies": {
-    "next": "^16.0.7",
-    "react": "^19.2.1",
-    "react-dom": "^19.2.1",
     "@heroui/react": "^2.8.5",
     "@heroui/theme": "^2.4.23",
-    "framer-motion": "^12.23.25"
+    "framer-motion": "^12.23.25",
+    "next": "^16.0.7",
+    "react": "^19.2.1",
+    "react-dom": "^19.2.1"
   },
   "devDependencies": {
-    "typescript": "^5.9.3",
+    "@eslint/eslintrc": "^3.3.3",
+    "@next/eslint-plugin-next": "^16.0.7",
     "@types/node": "^24.10.1",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
+    "@typescript-eslint/eslint-plugin": "^8.48.1",
+    "@typescript-eslint/parser": "^8.48.1",
     "eslint": "^9.39.1",
     "eslint-config-next": "^16.0.7",
-    "prettier": "^3.7.4"
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "globals": "^16.5.0",
+    "prettier": "^3.7.4",
+    "typescript": "^5.9.3"
   }
 }
-

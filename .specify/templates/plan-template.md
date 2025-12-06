@@ -31,7 +31,13 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+Verify compliance with core principles:
+
+- **Modular Architecture**: Does the proposed structure have clear module boundaries? Are dependencies unidirectional? Is each module independently testable?
+- **Code Readability**: Will the code structure be self-documenting? Are naming conventions clear? Is documentation planned for complex logic?
+- **User-Centric Design**: Have user needs been considered? Is the interface intuitive? Are error messages user-friendly? Is accessibility addressed?
+
+Any violations MUST be documented in the Complexity Tracking section below with justification.
 
 ## Project Structure
 

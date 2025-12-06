@@ -10,7 +10,7 @@ export const defaultConfig: ApplicationConfiguration = {
   externalDataSources: [
     {
       id: 'sample-api',
-      name: 'Sample API',
+      name: 'Sample API (JSONPlaceholder)',
       endpointUrl: 'https://jsonplaceholder.typicode.com',
       authentication: {
         method: 'none',

@@ -17,9 +17,9 @@
 
 **Purpose**: Project initialization and basic structure
 
-- [ ] T001 Verify Next.js 16 project structure exists (extends feature 001)
-- [ ] T002 [P] Verify HeroUI dependencies are installed in package.json
-- [ ] T003 [P] Verify TypeScript strict mode configuration in tsconfig.json
+- [x] T001 Verify Next.js 16 project structure exists (extends feature 001)
+- [x] T002 [P] Verify HeroUI dependencies are installed in package.json
+- [x] T003 [P] Verify TypeScript strict mode configuration in tsconfig.json
 
 ---
 
@@ -29,9 +29,9 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T004 Create TypeScript type definitions for countries API in lib/types/countries.ts
-- [ ] T005 [P] Create in-memory cache utility with TTL support in lib/utils/cache.ts
-- [ ] T006 [P] Verify HeroUIProvider is configured in app/layout.tsx (from feature 001)
+- [x] T004 Create TypeScript type definitions for countries API in lib/types/countries.ts
+- [x] T005 [P] Create in-memory cache utility with TTL support in lib/utils/cache.ts
+- [x] T006 [P] Verify HeroUIProvider is configured in app/layout.tsx (from feature 001)
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
@@ -45,14 +45,14 @@
 
 ### Implementation for User Story 1
 
-- [ ] T007 [US1] Implement cache get/set methods with TTL expiration check in lib/utils/cache.ts
-- [ ] T008 [US1] Implement REST Countries API fetch function with error handling in app/api/countries/route.ts
-- [ ] T009 [US1] Implement data transformation to extract name.common from REST Countries API response in app/api/countries/route.ts
-- [ ] T010 [US1] Implement cache check logic (valid/expired/missing) in app/api/countries/route.ts
-- [ ] T011 [US1] Implement GET /api/countries route handler with success response format in app/api/countries/route.ts
-- [ ] T012 [US1] Implement error handling with user-friendly messages and cache fallback in app/api/countries/route.ts
-- [ ] T013 [US1] Add timeout handling (10 seconds) for REST Countries API calls in app/api/countries/route.ts
-- [ ] T014 [US1] Add JSDoc comments for API route handler functions in app/api/countries/route.ts
+- [x] T007 [US1] Implement cache get/set methods with TTL expiration check in lib/utils/cache.ts
+- [x] T008 [US1] Implement REST Countries API fetch function with error handling in app/api/countries/route.ts
+- [x] T009 [US1] Implement data transformation to extract name.common from REST Countries API response in app/api/countries/route.ts
+- [x] T010 [US1] Implement cache check logic (valid/expired/missing) in app/api/countries/route.ts
+- [x] T011 [US1] Implement GET /api/countries route handler with success response format in app/api/countries/route.ts
+- [x] T012 [US1] Implement error handling with user-friendly messages and cache fallback in app/api/countries/route.ts
+- [x] T013 [US1] Add timeout handling (10 seconds) for REST Countries API calls in app/api/countries/route.ts
+- [x] T014 [US1] Add JSDoc comments for API route handler functions in app/api/countries/route.ts
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently. You can call `GET /api/countries` and receive country names with caching.
 
@@ -66,14 +66,14 @@
 
 ### Implementation for User Story 2
 
-- [ ] T015 [US2] Create CountryDropdown component with HeroUI Select in components/features/country-dropdown.tsx
-- [ ] T016 [US2] Implement client-side fetch of countries from /api/countries on component mount in components/features/country-dropdown.tsx
-- [ ] T017 [US2] Implement loading state display while fetching countries in components/features/country-dropdown.tsx
-- [ ] T018 [US2] Implement error state display with user-friendly error message in components/features/country-dropdown.tsx
-- [ ] T019 [US2] Implement case-insensitive partial matching filter function (ilike) in components/features/country-dropdown.tsx
-- [ ] T020 [US2] Implement real-time search filtering as user types in components/features/country-dropdown.tsx
-- [ ] T021 [US2] Integrate CountryDropdown component into home page in app/page.tsx
-- [ ] T022 [US2] Add empty state message when no countries match search in components/features/country-dropdown.tsx
+- [x] T015 [US2] Create CountryDropdown component with HeroUI Select in components/features/country-dropdown.tsx
+- [x] T016 [US2] Implement client-side fetch of countries from /api/countries on component mount in components/features/country-dropdown.tsx
+- [x] T017 [US2] Implement loading state display while fetching countries in components/features/country-dropdown.tsx
+- [x] T018 [US2] Implement error state display with user-friendly error message in components/features/country-dropdown.tsx
+- [x] T019 [US2] Implement case-insensitive partial matching filter function (ilike) in components/features/country-dropdown.tsx
+- [x] T020 [US2] Implement real-time search filtering as user types in components/features/country-dropdown.tsx
+- [x] T021 [US2] Integrate CountryDropdown component into home page in app/page.tsx
+- [x] T022 [US2] Add empty state message when no countries match search in components/features/country-dropdown.tsx
 
 **Checkpoint**: At this point, User Stories 1 AND 2 should both work independently. The home page displays a searchable dropdown populated with countries.
 
@@ -87,12 +87,12 @@
 
 ### Implementation for User Story 3
 
-- [ ] T023 [US3] Implement country selection state management in components/features/country-dropdown.tsx
-- [ ] T024 [US3] Create SantaSearchButton component with disabled state when no country selected in components/features/santa-search-button.tsx
-- [ ] T025 [US3] Implement console.log action for selected country in components/features/santa-search-button.tsx
-- [ ] T026 [US3] Integrate SantaSearchButton component into home page next to CountryDropdown in app/page.tsx
-- [ ] T027 [US3] Connect country selection from dropdown to SantaSearchButton component in app/page.tsx
-- [ ] T028 [US3] Add visual feedback when country is selected (dropdown shows selected value) in components/features/country-dropdown.tsx
+- [x] T023 [US3] Implement country selection state management in components/features/country-dropdown.tsx
+- [x] T024 [US3] Create SantaSearchButton component with disabled state when no country selected in components/features/santa-search-button.tsx
+- [x] T025 [US3] Implement console.log action for selected country in components/features/santa-search-button.tsx
+- [x] T026 [US3] Integrate SantaSearchButton component into home page next to CountryDropdown in app/page.tsx
+- [x] T027 [US3] Connect country selection from dropdown to SantaSearchButton component in app/page.tsx
+- [x] T028 [US3] Add visual feedback when country is selected (dropdown shows selected value) in components/features/country-dropdown.tsx
 
 **Checkpoint**: All user stories should now be independently functional. Users can search countries, select one, and trigger the "Santa Search" action.
 
@@ -102,13 +102,13 @@
 
 **Purpose**: Improvements that affect multiple user stories
 
-- [ ] T029 [P] Add JSDoc comments for all component props and functions in components/features/country-dropdown.tsx
-- [ ] T030 [P] Add JSDoc comments for all component props and functions in components/features/santa-search-button.tsx
-- [ ] T031 [P] Verify TypeScript strict mode compliance across all new files
-- [ ] T032 [P] Verify error messages are user-friendly (not technical) across all components
-- [ ] T033 [P] Verify accessibility (keyboard navigation, ARIA) works with HeroUI components
-- [ ] T034 [P] Run quickstart.md validation scenarios
-- [ ] T035 [P] Verify performance: API response <1s with cache, dropdown populated within 2 seconds
+- [x] T029 [P] Add JSDoc comments for all component props and functions in components/features/country-dropdown.tsx
+- [x] T030 [P] Add JSDoc comments for all component props and functions in components/features/santa-search-button.tsx
+- [x] T031 [P] Verify TypeScript strict mode compliance across all new files
+- [x] T032 [P] Verify error messages are user-friendly (not technical) across all components
+- [x] T033 [P] Verify accessibility (keyboard navigation, ARIA) works with HeroUI components
+- [x] T034 [P] Run quickstart.md validation scenarios
+- [x] T035 [P] Verify performance: API response <1s with cache, dropdown populated within 2 seconds
 
 ---
 

@@ -40,12 +40,12 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T001 Create TypeScript type definition for ChristmasCarol entity in `lib/types/dishes.ts` with name (string), author (string | null), country (string) fields
-- [ ] T002 [P] Create TypeScript type definition for CountryCulturalData in `lib/types/dishes.ts` with dishes (DishesResponse) and carol (ChristmasCarol | null) fields
-- [ ] T003 [P] Create TypeScript type definition for CountryCulturalApiSuccessResponse in `lib/types/dishes.ts` with success: true and data: CountryCulturalData
-- [ ] T004 [P] Create TypeScript type definition for CountryCulturalApiErrorResponse in `lib/types/dishes.ts` with success: false and error: { message: string }
-- [ ] T005 [P] Create TypeScript union type CountryCulturalApiResponse in `lib/types/dishes.ts` combining success and error responses
-- [ ] T006 Export all new types from `lib/types/dishes.ts` and verify `lib/types/index.ts` exports them (already exports from dishes module)
+- [x] T001 Create TypeScript type definition for ChristmasCarol entity in `lib/types/dishes.ts` with name (string), author (string | null), country (string) fields
+- [x] T002 [P] Create TypeScript type definition for CountryCulturalData in `lib/types/dishes.ts` with dishes (DishesResponse) and carol (ChristmasCarol | null) fields
+- [x] T003 [P] Create TypeScript type definition for CountryCulturalApiSuccessResponse in `lib/types/dishes.ts` with success: true and data: CountryCulturalData
+- [x] T004 [P] Create TypeScript type definition for CountryCulturalApiErrorResponse in `lib/types/dishes.ts` with success: false and error: { message: string }
+- [x] T005 [P] Create TypeScript union type CountryCulturalApiResponse in `lib/types/dishes.ts` combining success and error responses
+- [x] T006 Export all new types from `lib/types/dishes.ts` and verify `lib/types/index.ts` exports them (already exports from dishes module)
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
@@ -59,20 +59,20 @@
 
 ### Implementation for User Story 1
 
-- [ ] T007 [US1] Update `buildDishPrompt` function in `lib/api/openai-service.ts` to `buildCombinedPrompt` that includes both dishes and carol requests in single prompt
-- [ ] T008 [US1] Update `buildRefinedDishPrompt` function in `lib/api/openai-service.ts` to `buildRefinedCombinedPrompt` that includes both dishes and carol requirements in refined prompt
-- [ ] T009 [US1] Update `parseDishResponse` function in `lib/api/openai-service.ts` to `parseCombinedResponse` that parses both dishes and carol from OpenAI JSON response string
-- [ ] T010 [US1] Implement `parseCarolData` function in `lib/api/openai-service.ts` that extracts and validates ChristmasCarol object from parsed JSON
-- [ ] T011 [US1] Implement `validateCarolData` function in `lib/api/openai-service.ts` that validates ChristmasCarol has non-empty name and optional author
-- [ ] T012 [US1] Update `validateDishData` function in `lib/api/openai-service.ts` to `validateCombinedData` that validates both dishes (at least one non-null category) and/or carol (non-empty name if present)
-- [ ] T013 [US1] Update `queryDishesWithRetry` function in `lib/api/openai-service.ts` to `queryDishesAndCarolWithRetry` that uses combined prompt and returns CountryCulturalData
-- [ ] T014 [US1] Update error handling in `lib/api/openai-service.ts` to handle carol-specific errors gracefully (same user-friendly messages as dishes)
-- [ ] T015 [US1] Update API route handler in `app/api/dishes/route.ts` POST function to use `queryDishesAndCarolWithRetry` instead of `queryDishesWithRetry`
-- [ ] T016 [US1] Update cache check logic in `app/api/dishes/route.ts` POST handler to retrieve and return CountryCulturalData instead of DishesResponse
-- [ ] T017 [US1] Update cache storage logic in `app/api/dishes/route.ts` POST handler to store CountryCulturalData instead of DishesResponse (same 20-minute TTL)
-- [ ] T018 [US1] Update error response handling in `app/api/dishes/route.ts` POST handler to handle missing carol gracefully (dishes still returned if valid)
-- [ ] T019 [US1] Update JSDoc comments in `lib/api/openai-service.ts` for all modified functions explaining combined dishes and carol functionality
-- [ ] T020 [US1] Update JSDoc comments in `app/api/dishes/route.ts` POST handler explaining combined response structure and carol handling
+- [x] T007 [US1] Update `buildDishPrompt` function in `lib/api/openai-service.ts` to `buildCombinedPrompt` that includes both dishes and carol requests in single prompt
+- [x] T008 [US1] Update `buildRefinedDishPrompt` function in `lib/api/openai-service.ts` to `buildRefinedCombinedPrompt` that includes both dishes and carol requirements in refined prompt
+- [x] T009 [US1] Update `parseDishResponse` function in `lib/api/openai-service.ts` to `parseCombinedResponse` that parses both dishes and carol from OpenAI JSON response string
+- [x] T010 [US1] Implement `parseCarolData` function in `lib/api/openai-service.ts` that extracts and validates ChristmasCarol object from parsed JSON
+- [x] T011 [US1] Implement `validateCarolData` function in `lib/api/openai-service.ts` that validates ChristmasCarol has non-empty name and optional author
+- [x] T012 [US1] Update `validateDishData` function in `lib/api/openai-service.ts` to `validateCombinedData` that validates both dishes (at least one non-null category) and/or carol (non-empty name if present)
+- [x] T013 [US1] Update `queryDishesWithRetry` function in `lib/api/openai-service.ts` to `queryDishesAndCarolWithRetry` that uses combined prompt and returns CountryCulturalData
+- [x] T014 [US1] Update error handling in `lib/api/openai-service.ts` to handle carol-specific errors gracefully (same user-friendly messages as dishes)
+- [x] T015 [US1] Update API route handler in `app/api/dishes/route.ts` POST function to use `queryDishesAndCarolWithRetry` instead of `queryDishesWithRetry`
+- [x] T016 [US1] Update cache check logic in `app/api/dishes/route.ts` POST handler to retrieve and return CountryCulturalData instead of DishesResponse
+- [x] T017 [US1] Update cache storage logic in `app/api/dishes/route.ts` POST handler to store CountryCulturalData instead of DishesResponse (same 20-minute TTL)
+- [x] T018 [US1] Update error response handling in `app/api/dishes/route.ts` POST handler to handle missing carol gracefully (dishes still returned if valid)
+- [x] T019 [US1] Update JSDoc comments in `lib/api/openai-service.ts` for all modified functions explaining combined dishes and carol functionality
+- [x] T020 [US1] Update JSDoc comments in `app/api/dishes/route.ts` POST handler explaining combined response structure and carol handling
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently. API endpoint should return dishes and carol for a country with proper caching and error handling.
 
@@ -86,13 +86,13 @@
 
 ### Implementation for User Story 2
 
-- [ ] T021 [US2] Update state management in `app/page.tsx` to use CountryCulturalData instead of DishesResponse for dishes data state
-- [ ] T022 [US2] Update `fetchDishes` function in `app/page.tsx` to handle CountryCulturalData response structure with dishes and carol fields
-- [ ] T023 [US2] Update JSON display section in `app/page.tsx` to render CountryCulturalData as formatted JSON including both dishes and carol
-- [ ] T024 [US2] Implement conditional rendering in `app/page.tsx` to display carol information when carol is non-null, showing name and author (when available)
-- [ ] T025 [US2] Implement graceful handling in `app/page.tsx` for missing carol (carol is null) - display dishes only without error
-- [ ] T026 [US2] Update error state display in `app/page.tsx` to handle combined errors (dishes and carol) with user-friendly messages
-- [ ] T027 [US2] Verify loading state display in `app/page.tsx` works correctly for combined dishes and carol query (same as before)
+- [x] T021 [US2] Update state management in `app/page.tsx` to use CountryCulturalData instead of DishesResponse for dishes data state
+- [x] T022 [US2] Update `fetchDishes` function in `app/page.tsx` to handle CountryCulturalData response structure with dishes and carol fields
+- [x] T023 [US2] Update JSON display section in `app/page.tsx` to render CountryCulturalData as formatted JSON including both dishes and carol
+- [x] T024 [US2] Implement conditional rendering in `app/page.tsx` to display carol information when carol is non-null, showing name and author (when available)
+- [x] T025 [US2] Implement graceful handling in `app/page.tsx` for missing carol (carol is null) - display dishes only without error
+- [x] T026 [US2] Update error state display in `app/page.tsx` to handle combined errors (dishes and carol) with user-friendly messages
+- [x] T027 [US2] Verify loading state display in `app/page.tsx` works correctly for combined dishes and carol query (same as before)
 
 **Checkpoint**: At this point, User Stories 1 AND 2 should both work independently. Home page should display JSON content with both dishes and carol after query completes.
 
@@ -102,11 +102,11 @@
 
 **Purpose**: Improvements that affect multiple user stories
 
-- [ ] T028 [P] Update `README.md` in project root to document Christmas carol feature extension
-- [ ] T029 [P] Update API endpoint documentation in `README.md` to reflect combined dishes and carol response structure
-- [ ] T030 [P] Verify all TypeScript types are properly exported and imported across modules
-- [ ] T031 [P] Run `npm run lint` to check for linting errors and fix any issues
-- [ ] T032 [P] Verify code follows project constitution principles (modular architecture, code readability, user-centric design)
+- [x] T028 [P] Update `README.md` in project root to document Christmas carol feature extension
+- [x] T029 [P] Update API endpoint documentation in `README.md` to reflect combined dishes and carol response structure
+- [x] T030 [P] Verify all TypeScript types are properly exported and imported across modules
+- [x] T031 [P] Run `npm run lint` to check for linting errors and fix any issues
+- [x] T032 [P] Verify code follows project constitution principles (modular architecture, code readability, user-centric design)
 - [ ] T033 [P] Test cache expiration behavior: wait 20+ minutes and verify fresh data is fetched (dishes and carol) - MANUAL TEST REQUIRED
 - [ ] T034 [P] Test retry logic: simulate invalid response and verify refined query is attempted (includes carol requirements) - MANUAL TEST REQUIRED
 - [ ] T035 [P] Test error scenarios: rate limits, service unavailable, missing carol (dishes still displayed) - MANUAL TEST REQUIRED

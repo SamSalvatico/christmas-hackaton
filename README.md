@@ -31,6 +31,7 @@ That's it! The application will be available at `http://localhost:3000`.
 - **External Data Integration**: Connect to external APIs and data sources
 - **AI-Powered Processing**: Integrate AI services for intelligent data processing
 - **Country Famous Dishes**: Query OpenAI to discover famous dishes by country (entry, main, dessert)
+- **Country Christmas Carols**: Query OpenAI to discover famous Christmas carols by country (name and author when available)
 - **Searchable Country Dropdown**: Browse and select countries with real-time search
 - **One-Command Setup**: Run with default configuration, no setup required
 - **TypeScript Strict Mode**: Full type safety throughout
@@ -135,6 +136,64 @@ Process requests using AI services.
 ```
 
 ### POST /api/dishes
+
+Query OpenAI to retrieve famous dishes and a Christmas carol for a selected country. Returns combined cultural data (dishes + carol) with server-side caching (20-minute TTL).
+
+**Request Body:**
+```json
+{
+  "country": "Italy"
+}
+```
+
+**Success Response (200):**
+```json
+{
+  "success": true,
+  "data": {
+    "dishes": {
+      "entry": {
+        "name": "Bruschetta",
+        "description": "...",
+        "ingredients": ["bread", "tomatoes", "garlic", "..."]
+      },
+      "main": {
+        "name": "Pasta Carbonara",
+        "description": "...",
+        "ingredients": ["pasta", "eggs", "bacon", "..."]
+      },
+      "dessert": {
+        "name": "Tiramisu",
+        "description": "...",
+        "ingredients": ["mascarpone", "coffee", "ladyfingers", "..."]
+      }
+    },
+    "carol": {
+      "name": "Tu scendi dalle stelle",
+      "author": "Alfonso Maria de' Liguori",
+      "country": "Italy"
+    }
+  }
+}
+```
+
+**Error Response (400/500):**
+```json
+{
+  "success": false,
+  "error": {
+    "message": "Country name is required"
+  }
+}
+```
+
+**Features:**
+- Server-side caching (20-minute TTL) for valid responses only
+- Automatic retry with refined query for invalid/malformed responses
+- Graceful handling of missing carol (dishes still returned if valid)
+- User-friendly error messages for rate limits and service unavailability
+
+**Note**: The carol field may be `null` if no famous Christmas carol exists for the country. Dishes are always returned if available.
 Query OpenAI to retrieve famous dishes for a selected country.
 
 **Body:**

@@ -4,7 +4,10 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { CountryDropdown } from '@/components/features/country-dropdown';
 import { SantaSearchButton } from '@/components/features/santa-search-button';
-import type { DishesResponse, DishesApiResponse } from '@/lib/types/dishes';
+import type {
+  CountryCulturalData,
+  CountryCulturalApiResponse,
+} from '@/lib/types/dishes';
 
 /**
  * Truncate ingredient list to first 8 items, adding "There's more!" if list exceeds 8
@@ -20,15 +23,15 @@ function truncateIngredients(ingredients: string[]): string[] {
 
 export default function HomePage() {
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
-  const [dishesData, setDishesData] = useState<DishesResponse | null>(null);
+  const [culturalData, setCulturalData] = useState<CountryCulturalData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   /**
-   * Fetch dishes for the selected country from the API
-   * @param country - Country name to fetch dishes for
+   * Fetch dishes and carol for the selected country from the API
+   * @param country - Country name to fetch cultural data for
    */
-  async function fetchDishes(country: string) {
+  async function fetchCulturalData(country: string) {
     setIsLoading(true);
     setError(null);
 
@@ -41,63 +44,66 @@ export default function HomePage() {
         body: JSON.stringify({ country }),
       });
 
-      const result: DishesApiResponse = await response.json();
+      const result: CountryCulturalApiResponse = await response.json();
 
       if (result.success && result.data) {
         // Apply ingredient truncation to dishes data
-        const truncatedData: DishesResponse = {
-          entry: result.data.entry
-            ? {
-                ...result.data.entry,
-                ingredients: truncateIngredients(result.data.entry.ingredients),
-              }
-            : null,
-          main: result.data.main
-            ? {
-                ...result.data.main,
-                ingredients: truncateIngredients(result.data.main.ingredients),
-              }
-            : null,
-          dessert: result.data.dessert
-            ? {
-                ...result.data.dessert,
-                ingredients: truncateIngredients(result.data.dessert.ingredients),
-              }
-            : null,
+        const truncatedData: CountryCulturalData = {
+          dishes: {
+            entry: result.data.dishes.entry
+              ? {
+                  ...result.data.dishes.entry,
+                  ingredients: truncateIngredients(result.data.dishes.entry.ingredients),
+                }
+              : null,
+            main: result.data.dishes.main
+              ? {
+                  ...result.data.dishes.main,
+                  ingredients: truncateIngredients(result.data.dishes.main.ingredients),
+                }
+              : null,
+            dessert: result.data.dishes.dessert
+              ? {
+                  ...result.data.dishes.dessert,
+                  ingredients: truncateIngredients(result.data.dishes.dessert.ingredients),
+                }
+              : null,
+          },
+          carol: result.data.carol,
         };
-        setDishesData(truncatedData);
+        setCulturalData(truncatedData);
       } else if (!result.success && 'error' in result) {
         setError(
           result.error.message ||
-            'Unable to retrieve dishes. Please try again later.'
+            'Unable to retrieve cultural data. Please try again later.'
         );
-        setDishesData(null);
+        setCulturalData(null);
       } else {
-        setError('Unable to retrieve dishes. Please try again later.');
-        setDishesData(null);
+        setError('Unable to retrieve cultural data. Please try again later.');
+        setCulturalData(null);
       }
     } catch (err) {
       setError(
         err instanceof Error
           ? err.message
-          : 'Unable to retrieve dishes. Please try again later.'
+          : 'Unable to retrieve cultural data. Please try again later.'
       );
-      setDishesData(null);
+      setCulturalData(null);
     } finally {
       setIsLoading(false);
     }
   }
 
   /**
-   * Handle dish search triggered by Santa Search button
+   * Handle cultural data search triggered by Santa Search button
    * @param country - Selected country name
    */
-  function handleDishSearch(country: string) {
+  function handleCulturalSearch(country: string) {
     // Clear previous results
-    setDishesData(null);
+    setCulturalData(null);
     setError(null);
-    // Fetch dishes for the country
-    fetchDishes(country);
+    // Fetch cultural data for the country
+    fetchCulturalData(country);
   }
 
   return (
@@ -136,7 +142,7 @@ export default function HomePage() {
             <CountryDropdown onCountrySelect={setSelectedCountry} />
             <SantaSearchButton
               selectedCountry={selectedCountry}
-              onSearch={handleDishSearch}
+              onSearch={handleCulturalSearch}
             />
           </div>
         </div>
@@ -144,8 +150,8 @@ export default function HomePage() {
         {/* Loading State */}
         {isLoading && (
           <div className="border rounded-lg p-6 mb-8">
-            <h2 className="text-xl font-semibold mb-4">Loading Dishes...</h2>
-            <p className="text-gray-600">Querying OpenAI for famous dishes...</p>
+            <h2 className="text-xl font-semibold mb-4">Loading Cultural Data...</h2>
+            <p className="text-gray-600">Querying OpenAI for famous dishes and Christmas carol...</p>
           </div>
         )}
 
@@ -159,12 +165,14 @@ export default function HomePage() {
           </div>
         )}
 
-        {/* Dishes JSON Display */}
-        {dishesData && !isLoading && !error && (
+        {/* Cultural Data JSON Display */}
+        {culturalData && !isLoading && !error && (
           <div className="border rounded-lg p-6 mb-8">
-            <h2 className="text-xl font-semibold mb-4">Famous Dishes</h2>
+            <h2 className="text-xl font-semibold mb-4">
+              Cultural Data for {selectedCountry}
+            </h2>
             <pre className="bg-gray-50 p-4 rounded overflow-auto text-sm">
-              {JSON.stringify(dishesData, null, 2)}
+              {JSON.stringify(culturalData, null, 2)}
             </pre>
           </div>
         )}

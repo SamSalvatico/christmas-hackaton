@@ -1,11 +1,13 @@
 /**
- * OpenAI service for querying famous dishes by country
+ * OpenAI service for querying famous dishes and Christmas carols by country
  */
 
 import OpenAI from 'openai';
 import type {
   Dish,
   DishesResponse,
+  ChristmasCarol,
+  CountryCulturalData,
 } from '@/lib/types/dishes';
 
 /**
@@ -25,52 +27,66 @@ function initializeOpenAIClient(): OpenAI {
 }
 
 /**
- * Build structured prompt for dish query with explicit JSON format requirements
- * @param countryName - Name of the country to query dishes for
+ * Build structured prompt for combined dishes and carol query with explicit JSON format requirements
+ * @param countryName - Name of the country to query dishes and carol for
  * @returns Structured prompt string
  */
-export function buildDishPrompt(countryName: string): string {
-  return `For the country "${countryName}", provide the most famous dishes in JSON format.
-Return exactly one dish for each category (entry/appetizer, main course, dessert) if available.
+export function buildCombinedPrompt(countryName: string): string {
+  return `For the country "${countryName}", provide:
+1. The most famous dishes in JSON format
+2. A famous Christmas carol from this country
+
+For dishes, return exactly one dish for each category (entry/appetizer, main course, dessert) if available.
 For each dish, include:
 - name: string (dish name)
 - description: string (brief 1-3 sentence description)
 - ingredients: string[] (list of main ingredients)
 
+For the Christmas carol, include:
+- name: string (carol name)
+- author: string | null (author/composer name if available, null if unknown/traditional)
+
 Format the response as a JSON object with this structure:
 {
-  "entry": { "name": "...", "description": "...", "ingredients": [...] } | null,
-  "main": { "name": "...", "description": "...", "ingredients": [...] } | null,
-  "dessert": { "name": "...", "description": "...", "ingredients": [...] } | null
+  "dishes": {
+    "entry": { "name": "...", "description": "...", "ingredients": [...] } | null,
+    "main": { "name": "...", "description": "...", "ingredients": [...] } | null,
+    "dessert": { "name": "...", "description": "...", "ingredients": [...] } | null
+  },
+  "carol": {
+    "name": "...",
+    "author": "..." | null
+  } | null
 }
 
-If a category has no famous dishes, set it to null. Only include categories that have dishes.`;
+If a dish category has no famous dishes, set it to null. If no famous Christmas carol exists, set carol to null.`;
 }
 
 /**
- * Build refined prompt with more explicit format requirements for retry scenarios
- * @param countryName - Name of the country to query dishes for
+ * Build refined combined prompt with more explicit format requirements for retry scenarios
+ * @param countryName - Name of the country to query dishes and carol for
  * @returns Refined prompt string with stricter format requirements
  */
-export function buildRefinedDishPrompt(countryName: string): string {
-  return `${buildDishPrompt(countryName)}
+export function buildRefinedCombinedPrompt(countryName: string): string {
+  return `${buildCombinedPrompt(countryName)}
 
 IMPORTANT: You must respond with valid JSON only. Ensure:
-- All required fields (name, description, ingredients) are present for each dish
+- All required fields for dishes are present (name, description, ingredients)
 - Ingredients is an array of strings (not a single string or object)
+- Carol object has name field (required) and author field (null if unknown)
 - JSON is properly formatted and parseable
-- Categories without dishes are set to null
-- At least one category must have a non-null dish value`;
+- Dish categories without dishes are set to null
+- Carol is set to null if no famous Christmas carol exists
+- At least one dish category must be non-null OR carol must be non-null`;
 }
 
 /**
- * Query OpenAI API for dishes of a country
- * @param countryName - Name of the country to query dishes for
+ * Query OpenAI API for dishes and carol of a country
  * @param prompt - Prompt string to send to OpenAI
  * @returns Parsed JSON response string from OpenAI
  * @throws Error if OpenAI API call fails
  */
-async function queryDishesForCountry(
+async function queryDishesAndCarolForCountry(
   prompt: string
 ): Promise<string> {
   const openai = initializeOpenAIClient();
@@ -110,17 +126,89 @@ async function queryDishesForCountry(
     // Re-throw with user-friendly message
     const errorMessage =
       error instanceof Error ? error.message : 'Unknown error occurred';
-    throw new Error(`Failed to query dishes: ${errorMessage}`);
+    throw new Error(`Failed to query dishes and carol: ${errorMessage}`);
   }
 }
 
 /**
- * Parse OpenAI JSON response string into DishesResponse type
+ * Parse carol data from parsed JSON response
+ * @param carolData - Carol data from parsed JSON (can be object or null)
+ * @param countryName - Country name for the carol
+ * @returns Parsed ChristmasCarol object or null
+ */
+export function parseCarolData(
+  carolData: unknown,
+  countryName: string
+): ChristmasCarol | null {
+  if (carolData === null || carolData === undefined) {
+    return null;
+  }
+
+  if (typeof carolData !== 'object') {
+    return null;
+  }
+
+  const carol = carolData as Record<string, unknown>;
+
+  // Validate carol has name field
+  if (!('name' in carol) || typeof carol.name !== 'string' || carol.name.trim().length === 0) {
+    return null;
+  }
+
+  // Build ChristmasCarol with type safety
+  const christmasCarol: ChristmasCarol = {
+    name: carol.name.trim(),
+    author: null,
+    country: countryName,
+  };
+
+  // Parse author if present
+  if ('author' in carol) {
+    if (carol.author !== null && typeof carol.author === 'string' && carol.author.trim().length > 0) {
+      christmasCarol.author = carol.author.trim();
+    }
+  }
+
+  return christmasCarol;
+}
+
+/**
+ * Validate ChristmasCarol has non-empty name and optional author
+ * @param carol - ChristmasCarol to validate (can be null)
+ * @returns true if valid or null, false otherwise
+ */
+export function validateCarolData(carol: ChristmasCarol | null): boolean {
+  if (carol === null) {
+    return true; // null is valid (carol not available)
+  }
+
+  // Check required fields exist and are valid
+  if (
+    typeof carol.name !== 'string' ||
+    carol.name.trim().length === 0
+  ) {
+    return false;
+  }
+
+  // Author is optional, but if present must be non-empty string
+  if (carol.author !== null && (typeof carol.author !== 'string' || carol.author.trim().length === 0)) {
+    return false;
+  }
+
+  return true;
+}
+
+/**
+ * Parse OpenAI JSON response string into combined CountryCulturalData type
  * @param jsonString - JSON string from OpenAI API
- * @returns Parsed DishesResponse object
+ * @param countryName - Country name for the query
+ * @returns Parsed CountryCulturalData object
  * @throws Error if JSON is invalid or cannot be parsed
  */
-export function parseDishResponse(jsonString: string): DishesResponse {
+export function parseCombinedResponse(
+  jsonString: string,
+  countryName: string
+): CountryCulturalData {
   try {
     const parsed = JSON.parse(jsonString) as unknown;
 
@@ -131,103 +219,114 @@ export function parseDishResponse(jsonString: string): DishesResponse {
 
     const response = parsed as Record<string, unknown>;
 
-    // Validate structure has entry, main, dessert fields
-    if (!('entry' in response) && !('main' in response) && !('dessert' in response)) {
-      throw new Error('Invalid response format: missing category fields');
+    // Parse dishes
+    let dishes: DishesResponse;
+    if ('dishes' in response && typeof response.dishes === 'object' && response.dishes !== null) {
+      // New format with dishes object
+      const dishesObj = response.dishes as Record<string, unknown>;
+      dishes = {
+        entry: ('entry' in dishesObj && dishesObj.entry !== null) ? (dishesObj.entry as Dish) : null,
+        main: ('main' in dishesObj && dishesObj.main !== null) ? (dishesObj.main as Dish) : null,
+        dessert: ('dessert' in dishesObj && dishesObj.dessert !== null) ? (dishesObj.dessert as Dish) : null,
+      };
+    } else if ('entry' in response || 'main' in response || 'dessert' in response) {
+      // Legacy format (direct entry/main/dessert fields)
+      dishes = {
+        entry: ('entry' in response && response.entry !== null) ? (response.entry as Dish) : null,
+        main: ('main' in response && response.main !== null) ? (response.main as Dish) : null,
+        dessert: ('dessert' in response && response.dessert !== null) ? (response.dessert as Dish) : null,
+      };
+    } else {
+      throw new Error('Invalid response format: missing dishes data');
     }
 
-    // Build DishesResponse with type safety
-    const dishesResponse: DishesResponse = {
-      entry: null,
-      main: null,
-      dessert: null,
+    // Parse carol
+    const carol = parseCarolData(
+      'carol' in response ? response.carol : null,
+      countryName
+    );
+
+    return {
+      dishes,
+      carol,
     };
-
-    // Parse each category if present
-    if ('entry' in response && response.entry !== null) {
-      dishesResponse.entry = response.entry as Dish;
-    }
-    if ('main' in response && response.main !== null) {
-      dishesResponse.main = response.main as Dish;
-    }
-    if ('dessert' in response && response.dessert !== null) {
-      dishesResponse.dessert = response.dessert as Dish;
-    }
-
-    return dishesResponse;
   } catch (error) {
     const errorMessage =
       error instanceof Error ? error.message : 'Invalid JSON format';
-    throw new Error(`Failed to parse dish response: ${errorMessage}`);
+    throw new Error(`Failed to parse combined response: ${errorMessage}`);
   }
 }
 
 /**
- * Validate DishesResponse has at least one non-null category and all non-null dishes have required fields
- * @param data - DishesResponse to validate
+ * Validate combined CountryCulturalData has valid dishes and/or carol
+ * @param data - CountryCulturalData to validate
  * @returns true if valid, false otherwise
  */
-export function validateDishData(data: DishesResponse): boolean {
-  // Check at least one category is non-null
-  if (data.entry === null && data.main === null && data.dessert === null) {
-    return false;
-  }
+export function validateCombinedData(data: CountryCulturalData): boolean {
+  // Validate dishes
+  const hasValidDishes = data.dishes.entry !== null || data.dishes.main !== null || data.dishes.dessert !== null;
+  
+  if (hasValidDishes) {
+    // Validate each non-null dish
+    const dishes = [data.dishes.entry, data.dishes.main, data.dishes.dessert].filter(
+      (dish): dish is Dish => dish !== null
+    );
 
-  // Validate each non-null dish
-  const dishes = [data.entry, data.main, data.dessert].filter(
-    (dish): dish is Dish => dish !== null
-  );
-
-  for (const dish of dishes) {
-    // Check required fields exist and are valid
-    if (
-      typeof dish.name !== 'string' ||
-      dish.name.trim().length === 0 ||
-      typeof dish.description !== 'string' ||
-      dish.description.trim().length === 0 ||
-      !Array.isArray(dish.ingredients) ||
-      dish.ingredients.length === 0 ||
-      !dish.ingredients.every((ing) => typeof ing === 'string' && ing.trim().length > 0)
-    ) {
-      return false;
+    for (const dish of dishes) {
+      // Check required fields exist and are valid
+      if (
+        typeof dish.name !== 'string' ||
+        dish.name.trim().length === 0 ||
+        typeof dish.description !== 'string' ||
+        dish.description.trim().length === 0 ||
+        !Array.isArray(dish.ingredients) ||
+        dish.ingredients.length === 0 ||
+        !dish.ingredients.every((ing) => typeof ing === 'string' && ing.trim().length > 0)
+      ) {
+        return false;
+      }
     }
   }
 
-  return true;
+  // Validate carol
+  const hasValidCarol = validateCarolData(data.carol);
+
+  // At least one of dishes or carol must be valid
+  return hasValidDishes || (data.carol !== null && hasValidCarol);
 }
 
 /**
- * Query dishes for a country with automatic retry on invalid/malformed responses
- * @param countryName - Name of the country to query dishes for
- * @returns Validated DishesResponse
+ * Query dishes and carol for a country with automatic retry on invalid/malformed responses
+ * @param countryName - Name of the country to query dishes and carol for
+ * @returns Validated CountryCulturalData
  * @throws Error if query fails after retry or validation fails
  */
-export async function queryDishesWithRetry(
+export async function queryDishesAndCarolWithRetry(
   countryName: string
-): Promise<DishesResponse> {
+): Promise<CountryCulturalData> {
   // First attempt with standard prompt
-  let prompt = buildDishPrompt(countryName);
+  let prompt = buildCombinedPrompt(countryName);
   let jsonString: string;
-  let parsedResponse: DishesResponse;
+  let parsedResponse: CountryCulturalData;
 
   try {
-    jsonString = await queryDishesForCountry(prompt);
-    parsedResponse = parseDishResponse(jsonString);
+    jsonString = await queryDishesAndCarolForCountry(prompt);
+    parsedResponse = parseCombinedResponse(jsonString, countryName);
   } catch (error) {
     // If parsing fails, try with refined prompt
     const errorMessage =
       error instanceof Error ? error.message : 'Unknown error';
     if (errorMessage.includes('parse') || errorMessage.includes('Invalid')) {
       // Retry with refined prompt
-      prompt = buildRefinedDishPrompt(countryName);
+      prompt = buildRefinedCombinedPrompt(countryName);
       try {
-        jsonString = await queryDishesForCountry(prompt);
-        parsedResponse = parseDishResponse(jsonString);
+        jsonString = await queryDishesAndCarolForCountry(prompt);
+        parsedResponse = parseCombinedResponse(jsonString, countryName);
       } catch (retryError) {
         const retryErrorMessage =
           retryError instanceof Error ? retryError.message : 'Unknown error';
         throw new Error(
-          `Failed to retrieve valid dish data after retry: ${retryErrorMessage}`
+          `Failed to retrieve valid data after retry: ${retryErrorMessage}`
         );
       }
     } else {
@@ -237,42 +336,43 @@ export async function queryDishesWithRetry(
   }
 
   // Validate the parsed response
-  if (!validateDishData(parsedResponse)) {
+  if (!validateCombinedData(parsedResponse)) {
     // If validation fails, try with refined prompt
-    prompt = buildRefinedDishPrompt(countryName);
+    prompt = buildRefinedCombinedPrompt(countryName);
     try {
-      jsonString = await queryDishesForCountry(prompt);
-      parsedResponse = parseDishResponse(jsonString);
+      jsonString = await queryDishesAndCarolForCountry(prompt);
+      parsedResponse = parseCombinedResponse(jsonString, countryName);
 
       // Validate again
-      if (!validateDishData(parsedResponse)) {
+      if (!validateCombinedData(parsedResponse)) {
         throw new Error(
-          'Invalid dish data: response does not meet validation requirements'
+          'Invalid data: response does not meet validation requirements'
         );
       }
     } catch (retryError) {
       const retryErrorMessage =
         retryError instanceof Error ? retryError.message : 'Unknown error';
       throw new Error(
-        `Failed to retrieve valid dish data after retry: ${retryErrorMessage}`
+        `Failed to retrieve valid data after retry: ${retryErrorMessage}`
       );
     }
   }
 
   // Add country and type to each dish
-  if (parsedResponse.entry) {
-    parsedResponse.entry.country = countryName;
-    parsedResponse.entry.type = 'entry';
+  if (parsedResponse.dishes.entry) {
+    parsedResponse.dishes.entry.country = countryName;
+    parsedResponse.dishes.entry.type = 'entry';
   }
-  if (parsedResponse.main) {
-    parsedResponse.main.country = countryName;
-    parsedResponse.main.type = 'main';
+  if (parsedResponse.dishes.main) {
+    parsedResponse.dishes.main.country = countryName;
+    parsedResponse.dishes.main.type = 'main';
   }
-  if (parsedResponse.dessert) {
-    parsedResponse.dessert.country = countryName;
-    parsedResponse.dessert.type = 'dessert';
+  if (parsedResponse.dishes.dessert) {
+    parsedResponse.dishes.dessert.country = countryName;
+    parsedResponse.dishes.dessert.type = 'dessert';
   }
 
   return parsedResponse;
 }
+
 

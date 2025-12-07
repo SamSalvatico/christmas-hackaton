@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cache } from '@/lib/utils/cache';
-import { queryDishesWithRetry } from '@/lib/api/openai-service';
+import { queryDishesAndCarolWithRetry } from '@/lib/api/openai-service';
 import type {
   DishesApiRequest,
-  DishesApiResponse,
-  DishesResponse,
+  CountryCulturalApiResponse,
+  CountryCulturalData,
 } from '@/lib/types/dishes';
 
 /**
@@ -13,34 +13,35 @@ import type {
 const CACHE_TTL = 20 * 60 * 1000; // 1,200,000 milliseconds
 
 /**
- * Get cache key for a country's dishes
+ * Get cache key for a country's cultural data (dishes and carol)
  * @param countryName - Name of the country
  * @returns Cache key string
  */
 function getCacheKey(countryName: string): string {
-  return `dishes:${countryName}`;
+  return `cultural-data:${countryName.toLowerCase()}`;
 }
 
 /**
  * POST /api/dishes
  *
- * Queries OpenAI to retrieve famous dishes for a selected country.
+ * Queries OpenAI to retrieve famous dishes and a Christmas carol for a selected country.
  * Implements server-side caching with a 20-minute TTL for valid responses only.
  *
  * Request body: { country: string }
- * Response: { success: true, data: DishesResponse } | { success: false, error: { message: string } }
+ * Response: { success: true, data: CountryCulturalData } | { success: false, error: { message: string } }
  *
  * Flow:
  * 1. Validate request body contains non-empty country field
  * 2. Check cache for valid entry (not expired) for the country
  * 3. If cache hit: return cached data immediately
  * 4. If cache miss or expired:
- *    - Query OpenAI with structured prompt
+ *    - Query OpenAI with combined prompt (dishes + carol)
  *    - Parse and validate JSON response
  *    - If invalid: retry with refined query (max 1 retry)
  *    - If valid: store in cache with 20-minute TTL, return data
  *    - If still invalid after retry: return error (do not cache)
  * 5. Handle errors gracefully with user-friendly messages
+ * 6. Gracefully handle missing carol (dishes still returned if valid)
  */
 export async function POST(request: NextRequest) {
   try {
@@ -48,7 +49,7 @@ export async function POST(request: NextRequest) {
     const body: DishesApiRequest = await request.json();
 
     if (!body.country || typeof body.country !== 'string' || body.country.trim().length === 0) {
-      return NextResponse.json<DishesApiResponse>(
+      return NextResponse.json<CountryCulturalApiResponse>(
         {
           success: false,
           error: {
@@ -63,25 +64,25 @@ export async function POST(request: NextRequest) {
 
     // Check cache for valid entry
     const cacheKey = getCacheKey(countryName);
-    const cachedDishes = cache.get<DishesResponse>(cacheKey);
-    if (cachedDishes) {
+    const cachedData = cache.get<CountryCulturalData>(cacheKey);
+    if (cachedData) {
       // Cache hit - return cached data
-      return NextResponse.json<DishesApiResponse>({
+      return NextResponse.json<CountryCulturalApiResponse>({
         success: true,
-        data: cachedDishes,
+        data: cachedData,
       });
     }
 
     // Cache miss or expired - query OpenAI
     try {
-      const dishes = await queryDishesWithRetry(countryName);
+      const culturalData = await queryDishesAndCarolWithRetry(countryName);
 
       // Store valid response in cache (only if validation passed)
-      cache.set(cacheKey, dishes, CACHE_TTL);
+      cache.set(cacheKey, culturalData, CACHE_TTL);
 
-      return NextResponse.json<DishesApiResponse>({
+      return NextResponse.json<CountryCulturalApiResponse>({
         success: true,
-        data: dishes,
+        data: culturalData,
       });
     } catch (error) {
       // Handle OpenAI query errors
@@ -93,12 +94,12 @@ export async function POST(request: NextRequest) {
         errorMessage.includes('no dishes') ||
         errorMessage.includes('No famous dishes')
       ) {
-        return NextResponse.json<DishesApiResponse>(
+        return NextResponse.json<CountryCulturalApiResponse>(
           {
             success: false,
             error: {
               message:
-                'No famous dishes found for this country. Please try another country.',
+                'No cultural data found for this country. Please try another country.',
             },
           },
           { status: 500 }
@@ -107,7 +108,7 @@ export async function POST(request: NextRequest) {
 
       // Check if error indicates rate limit
       if (errorMessage.includes('temporarily unavailable')) {
-        return NextResponse.json<DishesApiResponse>(
+        return NextResponse.json<CountryCulturalApiResponse>(
           {
             success: false,
             error: {
@@ -124,12 +125,12 @@ export async function POST(request: NextRequest) {
         errorMessage.includes('Unable to connect') ||
         errorMessage.includes('service unavailable')
       ) {
-        return NextResponse.json<DishesApiResponse>(
+        return NextResponse.json<CountryCulturalApiResponse>(
           {
             success: false,
             error: {
               message:
-                'Unable to connect to dish service. Please try again later.',
+                'Unable to connect to cultural data service. Please try again later.',
             },
           },
           { status: 500 }
@@ -137,11 +138,11 @@ export async function POST(request: NextRequest) {
       }
 
       // Generic error response
-      return NextResponse.json<DishesApiResponse>(
+      return NextResponse.json<CountryCulturalApiResponse>(
         {
           success: false,
           error: {
-            message: `Unable to retrieve dishes for this country: ${errorMessage}. Please try again later.`,
+            message: `Unable to retrieve cultural data for this country: ${errorMessage}. Please try again later.`,
           },
         },
         { status: 500 }
@@ -152,7 +153,7 @@ export async function POST(request: NextRequest) {
     const errorMessage =
       error instanceof Error ? error.message : 'Unknown error occurred';
 
-    return NextResponse.json<DishesApiResponse>(
+    return NextResponse.json<CountryCulturalApiResponse>(
       {
         success: false,
         error: {

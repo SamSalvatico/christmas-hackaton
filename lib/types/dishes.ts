@@ -30,6 +30,28 @@ export interface DishesResponse {
 }
 
 /**
+ * Christmas Carol entity representing a famous Christmas carol from a country
+ */
+export interface ChristmasCarol {
+  /** The carol name */
+  name: string;
+  /** Author/composer of the carol, or null if unknown/traditional */
+  author: string | null;
+  /** Country name this carol belongs to */
+  country: string;
+}
+
+/**
+ * Combined response structure for dishes and carol for a country
+ */
+export interface CountryCulturalData {
+  /** Dishes response structure */
+  dishes: DishesResponse;
+  /** Christmas carol or null if not available */
+  carol: ChristmasCarol | null;
+}
+
+/**
  * API request structure for dish queries
  */
 export interface DishesApiRequest {
@@ -38,11 +60,19 @@ export interface DishesApiRequest {
 }
 
 /**
- * API success response structure
+ * API success response structure (legacy - for backward compatibility)
  */
 export interface DishesApiSuccessResponse {
   success: true;
   data: DishesResponse;
+}
+
+/**
+ * API success response structure for combined dishes and carol
+ */
+export interface CountryCulturalApiSuccessResponse {
+  success: true;
+  data: CountryCulturalData;
 }
 
 /**
@@ -56,9 +86,26 @@ export interface DishesApiErrorResponse {
 }
 
 /**
- * API response union type (success or error)
+ * API error response structure (alias for consistency)
+ */
+export interface CountryCulturalApiErrorResponse {
+  success: false;
+  error: {
+    message: string;
+  };
+}
+
+/**
+ * API response union type (success or error) - legacy
  */
 export type DishesApiResponse =
   | DishesApiSuccessResponse
   | DishesApiErrorResponse;
+
+/**
+ * API response union type (success or error) - combined dishes and carol
+ */
+export type CountryCulturalApiResponse =
+  | CountryCulturalApiSuccessResponse
+  | CountryCulturalApiErrorResponse;
 

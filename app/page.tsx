@@ -3,21 +3,29 @@
 import { useState } from 'react';
 import { CountryDropdown } from '@/components/features/country-dropdown';
 import { SantaSearchButton } from '@/components/features/santa-search-button';
+import { DishCard } from '@/components/features/dish-card';
+import { ChristmasSpinner } from '@/components/features/christmas-spinner';
+import { CarolLink } from '@/components/features/carol-link';
 import type {
   CountryCulturalData,
   CulturalDataApiResponse,
 } from '@/lib/types/cultural-data';
+import { christmasColors } from '@/lib/utils/christmas-theme';
 
 /**
- * Truncate ingredient list to first 8 items, adding "There's more!" if list exceeds 8
- * @param ingredients - Full list of ingredients
- * @returns Truncated list with "There's more!" message if applicable
+ * Fetch cultural data (dishes, carol, and Spotify URL) for the selected country from the API
+ * @param country - Country name to fetch cultural data for
  */
-function truncateIngredients(ingredients: string[]): string[] {
-  if (ingredients.length <= 8) {
-    return ingredients;
-  }
-  return [...ingredients.slice(0, 8), "There's more!"];
+async function fetchCulturalData(country: string): Promise<CulturalDataApiResponse> {
+  const response = await fetch('/api/cultural-data', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ country }),
+  });
+
+  return response.json();
 }
 
 export default function HomePage() {
@@ -27,51 +35,20 @@ export default function HomePage() {
   const [error, setError] = useState<string | null>(null);
 
   /**
-   * Fetch cultural data (dishes, carol, and Spotify URL) for the selected country from the API
-   * @param country - Country name to fetch cultural data for
+   * Handle cultural data search triggered by Santa Search button
+   * @param country - Selected country name
    */
-  async function fetchCulturalData(country: string) {
-    setIsLoading(true);
+  async function handleCulturalSearch(country: string) {
+    // Clear previous results
+    setCulturalData(null);
     setError(null);
+    setIsLoading(true);
 
     try {
-      const response = await fetch('/api/cultural-data', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ country }),
-      });
-
-      const result: CulturalDataApiResponse = await response.json();
+      const result = await fetchCulturalData(country);
 
       if (result.success && result.data) {
-        // Apply ingredient truncation to dishes data
-        const truncatedData: CountryCulturalData = {
-          dishes: {
-            entry: result.data.dishes.entry
-              ? {
-                  ...result.data.dishes.entry,
-                  ingredients: truncateIngredients(result.data.dishes.entry.ingredients),
-                }
-              : null,
-            main: result.data.dishes.main
-              ? {
-                  ...result.data.dishes.main,
-                  ingredients: truncateIngredients(result.data.dishes.main.ingredients),
-                }
-              : null,
-            dessert: result.data.dishes.dessert
-              ? {
-                  ...result.data.dishes.dessert,
-                  ingredients: truncateIngredients(result.data.dishes.dessert.ingredients),
-                }
-              : null,
-          },
-          carol: result.data.carol,
-          spotifyUrl: result.data.spotifyUrl ?? null,
-        };
-        setCulturalData(truncatedData);
+        setCulturalData(result.data);
       } else if (!result.success && 'error' in result) {
         setError(
           result.error.message ||
@@ -94,120 +71,108 @@ export default function HomePage() {
     }
   }
 
-  /**
-   * Handle cultural data search triggered by Santa Search button
-   * @param country - Selected country name
-   */
-  function handleCulturalSearch(country: string) {
-    // Clear previous results
-    setCulturalData(null);
-    setError(null);
-    // Fetch cultural data for the country
-    fetchCulturalData(country);
-  }
+  // Get dishes array for display
+  const dishes = culturalData
+    ? [
+        ...(culturalData.dishes.entry ? [{ dish: culturalData.dishes.entry, type: 'Entry' as const }] : []),
+        ...(culturalData.dishes.main ? [{ dish: culturalData.dishes.main, type: 'Main Course' as const }] : []),
+        ...(culturalData.dishes.dessert ? [{ dish: culturalData.dishes.dessert, type: 'Dessert' as const }] : []),
+      ]
+    : [];
 
   return (
-    <main className="container mx-auto p-8">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold mb-8 text-center">
-          Christmas Hackathon App
-        </h1>
-        <p className="text-lg text-center mb-8 text-gray-600">
-          SSR Web Application with AI Integration
-        </p>
-
-        <div className="grid gap-4 md:grid-cols-2 mb-8">
-          <div className="border rounded-lg p-6">
-            <h2 className="text-xl font-semibold mb-4">Status</h2>
-            <p className="text-green-600">✅ Application is running</p>
-            <p className="text-sm text-gray-500 mt-2">
-              One-command setup successful!
-            </p>
-          </div>
-
-          <div className="border rounded-lg p-6">
-            <h2 className="text-xl font-semibold mb-4">Features</h2>
-            <ul className="list-disc list-inside space-y-1">
-              <li>Next.js 16 SSR</li>
-              <li>TypeScript Strict Mode</li>
-              <li>AI-Powered Processing</li>
-            </ul>
-          </div>
+    <main className="min-h-screen" style={{ backgroundColor: christmasColors.white }}>
+      <div className="container mx-auto px-4 py-8 max-w-6xl">
+        {/* Header with funny Christmas title */}
+        <div className="text-center mb-8">
+          <h1
+            className="text-3xl md:text-5xl font-bold mb-4"
+            style={{ color: christmasColors.red }}
+          >
+            🎄 Santa&apos;s Global Feast Finder 🎄
+          </h1>
+          <p className="text-lg md:text-xl text-gray-700">
+            Discover Christmas traditions from around the world
+          </p>
         </div>
 
-        <div className="border rounded-lg p-6 mb-8">
-          <h2 className="text-xl font-semibold mb-4">Country Search</h2>
-          <div className="max-w-md space-y-4">
+        {/* Centered search section */}
+        <div className="flex flex-col items-center justify-center mb-8">
+          <div className="w-full max-w-md space-y-4">
             <CountryDropdown onCountrySelect={setSelectedCountry} />
-            <SantaSearchButton
-              selectedCountry={selectedCountry}
-              onSearch={handleCulturalSearch}
-            />
+            <div className="flex justify-center">
+              <SantaSearchButton
+                selectedCountry={selectedCountry}
+                onSearch={handleCulturalSearch}
+              />
+            </div>
           </div>
         </div>
 
         {/* Loading State */}
-        {isLoading && (
-          <div className="border rounded-lg p-6 mb-8">
-            <h2 className="text-xl font-semibold mb-4">Loading Cultural Data...</h2>
-            <p className="text-gray-600">Querying OpenAI for famous dishes and Christmas carol...</p>
-          </div>
-        )}
+        {isLoading && <ChristmasSpinner />}
 
         {/* Error State */}
         {error && !isLoading && (
-          <div className="border rounded-lg p-6 mb-8 border-red-300 bg-red-50">
-            <h2 className="text-xl font-semibold mb-4 text-red-800">
-              Error
+          <div
+            className="border-2 rounded-lg p-6 mb-8 text-center"
+            style={{
+              borderColor: christmasColors.red,
+              backgroundColor: '#FEE2E2',
+            }}
+          >
+            <h2
+              className="text-xl font-semibold mb-2"
+              style={{ color: christmasColors.darkRed }}
+            >
+              Oops! Something went wrong
             </h2>
-            <p className="text-red-600">{error}</p>
+            <p style={{ color: christmasColors.darkRed }}>{error}</p>
           </div>
         )}
 
-        {/* Cultural Data JSON Display */}
+        {/* Cultural Data Display */}
         {culturalData && !isLoading && !error && (
-          <div className="border rounded-lg p-6 mb-8">
-            <h2 className="text-xl font-semibold mb-4">
-              Cultural Data for {selectedCountry}
-            </h2>
-            
-            {/* Spotify Link Display */}
-            {culturalData.carol && (
-              <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded">
-                <h3 className="font-semibold text-lg mb-2">
-                  Christmas Carol: {culturalData.carol.name}
-                </h3>
-                {culturalData.carol.author && (
-                  <p className="text-sm text-gray-600 mb-2">
-                    by {culturalData.carol.author}
-                  </p>
-                )}
-                {culturalData.spotifyUrl ? (
-                  <a
-                    href={culturalData.spotifyUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-block px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
-                  >
-                    🎵 Listen on Spotify
-                  </a>
-                ) : (
-                  <p className="text-gray-600 italic">
-                    not found on spotify
-                  </p>
-                )}
+          <div className="space-y-6">
+            {/* Dish Cards Grid */}
+            {dishes.length > 0 && (
+              <div>
+                <h2
+                  className="text-2xl font-bold mb-4 text-center"
+                  style={{ color: christmasColors.darkGreen }}
+                >
+                  🍽️ Christmas Dishes from {selectedCountry}
+                </h2>
+                <div
+                  className={`grid gap-6 ${
+                    dishes.length === 1
+                      ? 'grid-cols-1 md:grid-cols-1'
+                      : dishes.length === 2
+                      ? 'grid-cols-1 md:grid-cols-2'
+                      : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
+                  }`}
+                >
+                  {dishes.map(({ dish, type }) => (
+                    <DishCard key={`${dish.type}-${dish.name}`} dish={dish} dishType={type} />
+                  ))}
+                </div>
               </div>
             )}
 
-            <pre className="bg-gray-50 p-4 rounded overflow-auto text-sm">
-              {JSON.stringify(culturalData, null, 2)}
-            </pre>
+            {/* Carol Link */}
+            {culturalData.carol && (
+              <div className="flex justify-center">
+                <div className="w-full max-w-2xl">
+                  <CarolLink
+                    carol={culturalData.carol}
+                    spotifyUrl={culturalData.spotifyUrl ?? null}
+                  />
+                </div>
+              </div>
+            )}
           </div>
         )}
-
-        
       </div>
     </main>
   );
 }
-

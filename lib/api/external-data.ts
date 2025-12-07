@@ -33,9 +33,12 @@ export async function fetchExternalData(
   }
 
   // Prepare headers
-  const headers = applyAuthentication(source.authentication, {
-    'Content-Type': 'application/json',
-  });
+  const headers = applyAuthentication(
+    source.authentication || { method: 'none', apiKey: null, bearerToken: null, username: null, password: null, headerName: null },
+    {
+      'Content-Type': 'application/json',
+    }
+  );
 
   // Prepare request options with timeout
   const controller = new AbortController();

@@ -30,12 +30,14 @@ That's it! The application will be available at `http://localhost:3000`.
 - **Single Service SSR**: Frontend and backend in one Next.js service
 - **External Data Integration**: Connect to external APIs and data sources
 - **AI-Powered Processing**: Integrate AI services for intelligent data processing
+- **Country Famous Dishes**: Query OpenAI to discover famous dishes by country (entry, main, dessert)
+- **Searchable Country Dropdown**: Browse and select countries with real-time search
 - **One-Command Setup**: Run with default configuration, no setup required
 - **TypeScript Strict Mode**: Full type safety throughout
 
 ## Available Pages
 
-- `/` - Home page with application status
+- `/` - Home page with country selection and dish discovery
 - `/external-data` - View and process external data sources
 - `/ai` - AI-powered processing interface
 - `/api/health` - Health check endpoint
@@ -63,11 +65,22 @@ For detailed MCP rules and usage, see [specs/001-ssr-web-app/MCP_RULES.md](./spe
 
 ## Configuration
 
-Default configuration allows the application to run immediately. To customize:
+### Environment Variables
 
-1. Copy `.env.example` to `.env.local`
-2. Update environment variables as needed
+The application requires the following environment variables:
+
+- **`OPENAI_API_KEY`** (required for dish queries): Your OpenAI API key
+  - Get your API key from [OpenAI API Keys](https://platform.openai.com/account/api-keys)
+  - Copy `.env.sample` to `.env.local` and replace the placeholder with your actual API key
+  - Example: `OPENAI_API_KEY=sk-your-api-key-here`
+
+**Setup Steps:**
+
+1. Copy `.env.sample` to `.env.local` (if not exists)
+2. Update `OPENAI_API_KEY` with your actual OpenAI API key
 3. Restart the development server
+
+**Note**: `.env.local` is already in `.gitignore` to prevent committing API keys.
 
 ### Default Configuration
 
@@ -75,6 +88,7 @@ The application includes default configurations that work out of the box:
 
 - **External Data Source**: Sample API (JSONPlaceholder) - no authentication required
 - **AI Service**: Demo mode - returns mock responses for testing
+- **Dish Queries**: Requires OpenAI API key (see above)
 - **Server Port**: 3000 (or next available port)
 
 ## API Endpoints
@@ -120,6 +134,56 @@ Process requests using AI services.
 }
 ```
 
+### POST /api/dishes
+Query OpenAI to retrieve famous dishes for a selected country.
+
+**Body:**
+```json
+{
+  "country": "Italy"
+}
+```
+
+**Response (Success):**
+```json
+{
+  "success": true,
+  "data": {
+    "entry": {
+      "name": "Bruschetta",
+      "description": "Toasted bread topped with fresh tomatoes, garlic, and basil.",
+      "ingredients": ["bread", "tomatoes", "garlic", "basil", "olive oil", "salt"]
+    },
+    "main": {
+      "name": "Pasta Carbonara",
+      "description": "A classic Roman pasta dish made with eggs, cheese, pancetta, and black pepper.",
+      "ingredients": ["pasta", "eggs", "pecorino cheese", "pancetta", "black pepper"]
+    },
+    "dessert": {
+      "name": "Tiramisu",
+      "description": "A coffee-flavored Italian dessert made with ladyfingers, mascarpone, and cocoa.",
+      "ingredients": ["ladyfingers", "mascarpone", "coffee", "cocoa powder", "eggs", "sugar"]
+    }
+  }
+}
+```
+
+**Response (Error):**
+```json
+{
+  "success": false,
+  "error": {
+    "message": "User-friendly error message"
+  }
+}
+```
+
+**Features:**
+- Caches valid responses for 20 minutes per country
+- Automatically retries with refined query if response is invalid/malformed
+- Returns user-friendly error messages for rate limits, service unavailability, etc.
+- Only valid responses are cached (invalid responses trigger retry, not cache)
+
 ## Project Structure
 
 ```
@@ -127,7 +191,9 @@ app/                          # Next.js App Router
 ├── api/                      # API routes
 │   ├── health/              # Health check
 │   ├── external-data/       # External data API
-│   └── ai/                  # AI processing API
+│   ├── ai/                  # AI processing API
+│   ├── countries/           # Countries API (REST Countries integration)
+│   └── dishes/              # Dishes API (OpenAI integration)
 ├── (routes)/                 # Route groups
 │   ├── external-data/       # External data page
 │   └── ai/                  # AI processing page

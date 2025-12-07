@@ -4,9 +4,101 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { CountryDropdown } from '@/components/features/country-dropdown';
 import { SantaSearchButton } from '@/components/features/santa-search-button';
+import type { DishesResponse, DishesApiResponse } from '@/lib/types/dishes';
+
+/**
+ * Truncate ingredient list to first 8 items, adding "There's more!" if list exceeds 8
+ * @param ingredients - Full list of ingredients
+ * @returns Truncated list with "There's more!" message if applicable
+ */
+function truncateIngredients(ingredients: string[]): string[] {
+  if (ingredients.length <= 8) {
+    return ingredients;
+  }
+  return [...ingredients.slice(0, 8), "There's more!"];
+}
 
 export default function HomePage() {
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
+  const [dishesData, setDishesData] = useState<DishesResponse | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  /**
+   * Fetch dishes for the selected country from the API
+   * @param country - Country name to fetch dishes for
+   */
+  async function fetchDishes(country: string) {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch('/api/dishes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ country }),
+      });
+
+      const result: DishesApiResponse = await response.json();
+
+      if (result.success && result.data) {
+        // Apply ingredient truncation to dishes data
+        const truncatedData: DishesResponse = {
+          entry: result.data.entry
+            ? {
+                ...result.data.entry,
+                ingredients: truncateIngredients(result.data.entry.ingredients),
+              }
+            : null,
+          main: result.data.main
+            ? {
+                ...result.data.main,
+                ingredients: truncateIngredients(result.data.main.ingredients),
+              }
+            : null,
+          dessert: result.data.dessert
+            ? {
+                ...result.data.dessert,
+                ingredients: truncateIngredients(result.data.dessert.ingredients),
+              }
+            : null,
+        };
+        setDishesData(truncatedData);
+      } else if (!result.success && 'error' in result) {
+        setError(
+          result.error.message ||
+            'Unable to retrieve dishes. Please try again later.'
+        );
+        setDishesData(null);
+      } else {
+        setError('Unable to retrieve dishes. Please try again later.');
+        setDishesData(null);
+      }
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : 'Unable to retrieve dishes. Please try again later.'
+      );
+      setDishesData(null);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  /**
+   * Handle dish search triggered by Santa Search button
+   * @param country - Selected country name
+   */
+  function handleDishSearch(country: string) {
+    // Clear previous results
+    setDishesData(null);
+    setError(null);
+    // Fetch dishes for the country
+    fetchDishes(country);
+  }
 
   return (
     <main className="container mx-auto p-8">
@@ -42,9 +134,40 @@ export default function HomePage() {
           <h2 className="text-xl font-semibold mb-4">Country Search</h2>
           <div className="max-w-md space-y-4">
             <CountryDropdown onCountrySelect={setSelectedCountry} />
-            <SantaSearchButton selectedCountry={selectedCountry} />
+            <SantaSearchButton
+              selectedCountry={selectedCountry}
+              onSearch={handleDishSearch}
+            />
           </div>
         </div>
+
+        {/* Loading State */}
+        {isLoading && (
+          <div className="border rounded-lg p-6 mb-8">
+            <h2 className="text-xl font-semibold mb-4">Loading Dishes...</h2>
+            <p className="text-gray-600">Querying OpenAI for famous dishes...</p>
+          </div>
+        )}
+
+        {/* Error State */}
+        {error && !isLoading && (
+          <div className="border rounded-lg p-6 mb-8 border-red-300 bg-red-50">
+            <h2 className="text-xl font-semibold mb-4 text-red-800">
+              Error
+            </h2>
+            <p className="text-red-600">{error}</p>
+          </div>
+        )}
+
+        {/* Dishes JSON Display */}
+        {dishesData && !isLoading && !error && (
+          <div className="border rounded-lg p-6 mb-8">
+            <h2 className="text-xl font-semibold mb-4">Famous Dishes</h2>
+            <pre className="bg-gray-50 p-4 rounded overflow-auto text-sm">
+              {JSON.stringify(dishesData, null, 2)}
+            </pre>
+          </div>
+        )}
 
         <div className="border rounded-lg p-6">
           <h2 className="text-xl font-semibold mb-4">Quick Links</h2>

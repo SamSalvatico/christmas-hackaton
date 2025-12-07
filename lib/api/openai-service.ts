@@ -1,5 +1,5 @@
 /**
- * OpenAI service for querying famous dishes and Christmas carols by country
+ * OpenAI service for querying cultural data (famous dishes and Christmas carols) by country
  */
 
 import OpenAI from 'openai';
@@ -8,7 +8,7 @@ import type {
   DishesResponse,
   ChristmasCarol,
   CountryCulturalData,
-} from '@/lib/types/dishes';
+} from '@/lib/types/cultural-data';
 
 /**
  * Initialize OpenAI client with API key from environment variable
@@ -27,8 +27,8 @@ function initializeOpenAIClient(): OpenAI {
 }
 
 /**
- * Build structured prompt for combined dishes and carol query with explicit JSON format requirements
- * @param countryName - Name of the country to query dishes and carol for
+ * Build structured prompt for cultural data query (dishes and carol) with explicit JSON format requirements
+ * @param countryName - Name of the country to query cultural data for
  * @returns Structured prompt string
  */
 export function buildCombinedPrompt(countryName: string): string {
@@ -64,7 +64,7 @@ If a dish category has no famous dishes, set it to null. If no famous Christmas 
 
 /**
  * Build refined combined prompt with more explicit format requirements for retry scenarios
- * @param countryName - Name of the country to query dishes and carol for
+ * @param countryName - Name of the country to query cultural data for
  * @returns Refined prompt string with stricter format requirements
  */
 export function buildRefinedCombinedPrompt(countryName: string): string {
@@ -81,7 +81,7 @@ IMPORTANT: You must respond with valid JSON only. Ensure:
 }
 
 /**
- * Query OpenAI API for dishes and carol of a country
+ * Query OpenAI API for cultural data (dishes and carol) of a country
  * @param prompt - Prompt string to send to OpenAI
  * @returns Parsed JSON response string from OpenAI
  * @throws Error if OpenAI API call fails
@@ -119,14 +119,14 @@ async function queryDishesAndCarolForCountry(
         throw new Error('Service configuration error. Please contact support.');
       }
       if (error.status === 500 || error.status === 503) {
-        throw new Error('Unable to connect to dish service. Please try again later.');
+        throw new Error('Unable to connect to cultural data service. Please try again later.');
       }
     }
 
     // Re-throw with user-friendly message
     const errorMessage =
       error instanceof Error ? error.message : 'Unknown error occurred';
-    throw new Error(`Failed to query dishes and carol: ${errorMessage}`);
+    throw new Error(`Failed to query cultural data: ${errorMessage}`);
   }
 }
 
@@ -296,12 +296,12 @@ export function validateCombinedData(data: CountryCulturalData): boolean {
 }
 
 /**
- * Query dishes and carol for a country with automatic retry on invalid/malformed responses
- * @param countryName - Name of the country to query dishes and carol for
+ * Query cultural data (dishes and carol) for a country with automatic retry on invalid/malformed responses
+ * @param countryName - Name of the country to query cultural data for
  * @returns Validated CountryCulturalData
  * @throws Error if query fails after retry or validation fails
  */
-export async function queryDishesAndCarolWithRetry(
+export async function queryCulturalDataWithRetry(
   countryName: string
 ): Promise<CountryCulturalData> {
   // First attempt with standard prompt

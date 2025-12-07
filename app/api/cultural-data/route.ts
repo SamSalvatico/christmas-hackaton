@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cache } from '@/lib/utils/cache';
-import { queryDishesAndCarolWithRetry } from '@/lib/api/openai-service';
+import { queryCulturalDataWithRetry } from '@/lib/api/openai-service';
 import { searchSpotifyForCarol } from '@/lib/api/spotify-service';
 import type {
-  DishesApiRequest,
-  CountryCulturalApiResponse,
+  CulturalDataApiRequest,
+  CulturalDataApiResponse,
   CountryCulturalData,
-} from '@/lib/types/dishes';
+} from '@/lib/types/cultural-data';
 
 /**
  * Cache TTL: 20 minutes in milliseconds
@@ -14,7 +14,7 @@ import type {
 const CACHE_TTL = 20 * 60 * 1000; // 1,200,000 milliseconds
 
 /**
- * Get cache key for a country's cultural data (dishes and carol)
+ * Get cache key for a country's cultural data
  * @param countryName - Name of the country
  * @returns Cache key string
  */
@@ -23,9 +23,9 @@ function getCacheKey(countryName: string): string {
 }
 
 /**
- * POST /api/dishes
+ * POST /api/cultural-data
  *
- * Queries OpenAI to retrieve famous dishes and a Christmas carol for a selected country.
+ * Queries OpenAI to retrieve comprehensive cultural data (famous dishes, Christmas carol, and Spotify URL) for a selected country.
  * Implements server-side caching with a 20-minute TTL for valid responses only.
  *
  * Request body: { country: string }
@@ -47,10 +47,10 @@ function getCacheKey(countryName: string): string {
 export async function POST(request: NextRequest) {
   try {
     // Parse and validate request body
-    const body: DishesApiRequest = await request.json();
+    const body: CulturalDataApiRequest = await request.json();
 
     if (!body.country || typeof body.country !== 'string' || body.country.trim().length === 0) {
-      return NextResponse.json<CountryCulturalApiResponse>(
+      return NextResponse.json<CulturalDataApiResponse>(
         {
           success: false,
           error: {
@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
     const cachedData = cache.get<CountryCulturalData>(cacheKey);
     if (cachedData) {
       // Cache hit - return cached data (includes spotifyUrl if previously searched)
-      return NextResponse.json<CountryCulturalApiResponse>({
+      return NextResponse.json<CulturalDataApiResponse>({
         success: true,
         data: cachedData,
       });
@@ -76,7 +76,7 @@ export async function POST(request: NextRequest) {
 
     // Cache miss or expired - query OpenAI
     try {
-      const culturalData = await queryDishesAndCarolWithRetry(countryName);
+      const culturalData = await queryCulturalDataWithRetry(countryName);
 
       // Search Spotify for carol if available
       let spotifyUrl: string | null = null;
@@ -99,7 +99,7 @@ export async function POST(request: NextRequest) {
       // Store valid response in cache (only if validation passed)
       cache.set(cacheKey, culturalDataWithSpotify, CACHE_TTL);
 
-      return NextResponse.json<CountryCulturalApiResponse>({
+      return NextResponse.json<CulturalDataApiResponse>({
         success: true,
         data: culturalDataWithSpotify,
       });
@@ -108,12 +108,12 @@ export async function POST(request: NextRequest) {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error occurred';
 
-      // Check if error indicates no dishes found
+      // Check if error indicates no cultural data found
       if (
         errorMessage.includes('no dishes') ||
         errorMessage.includes('No famous dishes')
       ) {
-        return NextResponse.json<CountryCulturalApiResponse>(
+        return NextResponse.json<CulturalDataApiResponse>(
           {
             success: false,
             error: {
@@ -127,7 +127,7 @@ export async function POST(request: NextRequest) {
 
       // Check if error indicates rate limit
       if (errorMessage.includes('temporarily unavailable')) {
-        return NextResponse.json<CountryCulturalApiResponse>(
+        return NextResponse.json<CulturalDataApiResponse>(
           {
             success: false,
             error: {
@@ -144,7 +144,7 @@ export async function POST(request: NextRequest) {
         errorMessage.includes('Unable to connect') ||
         errorMessage.includes('service unavailable')
       ) {
-        return NextResponse.json<CountryCulturalApiResponse>(
+        return NextResponse.json<CulturalDataApiResponse>(
           {
             success: false,
             error: {
@@ -157,7 +157,7 @@ export async function POST(request: NextRequest) {
       }
 
       // Generic error response
-      return NextResponse.json<CountryCulturalApiResponse>(
+      return NextResponse.json<CulturalDataApiResponse>(
         {
           success: false,
           error: {
@@ -172,7 +172,7 @@ export async function POST(request: NextRequest) {
     const errorMessage =
       error instanceof Error ? error.message : 'Unknown error occurred';
 
-    return NextResponse.json<CountryCulturalApiResponse>(
+    return NextResponse.json<CulturalDataApiResponse>(
       {
         success: false,
         error: {

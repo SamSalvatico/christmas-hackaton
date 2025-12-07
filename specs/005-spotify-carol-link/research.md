@@ -212,3 +212,4 @@ return null; // No result found
 - ✅ Error handling: Graceful degradation with user-friendly messages
 - ✅ Integration point: Server-side in `/api/dishes` route
 
+

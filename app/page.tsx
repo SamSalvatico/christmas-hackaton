@@ -1,13 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
 import { CountryDropdown } from '@/components/features/country-dropdown';
 import { SantaSearchButton } from '@/components/features/santa-search-button';
 import type {
   CountryCulturalData,
-  CountryCulturalApiResponse,
-} from '@/lib/types/dishes';
+  CulturalDataApiResponse,
+} from '@/lib/types/cultural-data';
 
 /**
  * Truncate ingredient list to first 8 items, adding "There's more!" if list exceeds 8
@@ -28,7 +27,7 @@ export default function HomePage() {
   const [error, setError] = useState<string | null>(null);
 
   /**
-   * Fetch dishes and carol for the selected country from the API
+   * Fetch cultural data (dishes, carol, and Spotify URL) for the selected country from the API
    * @param country - Country name to fetch cultural data for
    */
   async function fetchCulturalData(country: string) {
@@ -36,7 +35,7 @@ export default function HomePage() {
     setError(null);
 
     try {
-      const response = await fetch('/api/dishes', {
+      const response = await fetch('/api/cultural-data', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -44,7 +43,7 @@ export default function HomePage() {
         body: JSON.stringify({ country }),
       });
 
-      const result: CountryCulturalApiResponse = await response.json();
+      const result: CulturalDataApiResponse = await response.json();
 
       if (result.success && result.data) {
         // Apply ingredient truncation to dishes data
@@ -131,7 +130,6 @@ export default function HomePage() {
             <ul className="list-disc list-inside space-y-1">
               <li>Next.js 16 SSR</li>
               <li>TypeScript Strict Mode</li>
-              <li>External Data Integration</li>
               <li>AI-Powered Processing</li>
             </ul>
           </div>
@@ -207,29 +205,7 @@ export default function HomePage() {
           </div>
         )}
 
-        <div className="border rounded-lg p-6">
-          <h2 className="text-xl font-semibold mb-4">Quick Links</h2>
-          <div className="space-y-2">
-            <Link
-              href="/external-data"
-              className="block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-center"
-            >
-              View External Data
-            </Link>
-            <Link
-              href="/ai"
-              className="block px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 text-center"
-            >
-              AI Processing
-            </Link>
-            <Link
-              href="/api/health"
-              className="block px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 text-center"
-            >
-              Health Check
-            </Link>
-          </div>
-        </div>
+        
       </div>
     </main>
   );

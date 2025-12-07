@@ -1,6 +1,7 @@
 'use client';
 
-import { Button } from '@heroui/react';
+import { Button } from '@heroui/button';
+import { christmasColors } from '@/lib/utils/christmas-theme';
 
 /**
  * Props for SantaSearchButton component
@@ -20,7 +21,7 @@ interface SantaSearchButtonProps {
 /**
  * SantaSearchButton component
  * Displays a "Santa Search" button that is enabled only when a country is selected
- * When clicked, logs the selected country to console (placeholder for future functionality)
+ * Styled with Christmas theme colors
  */
 export function SantaSearchButton({
   selectedCountry,
@@ -28,8 +29,6 @@ export function SantaSearchButton({
 }: SantaSearchButtonProps) {
   const handleClick = () => {
     if (selectedCountry) {
-      // Log to console as placeholder for future functionality
-      console.log('Santa Search clicked for country:', selectedCountry);
       onSearch?.(selectedCountry);
     }
   };
@@ -40,8 +39,13 @@ export function SantaSearchButton({
       size="lg"
       isDisabled={!selectedCountry}
       onPress={handleClick}
+      className="min-w-[120px] min-h-[44px] font-semibold"
+      style={{
+        backgroundColor: selectedCountry ? christmasColors.red : undefined,
+        color: selectedCountry ? christmasColors.white : undefined,
+      }}
     >
-      Santa Search
+      🎅 Santa Search
     </Button>
   );
 }

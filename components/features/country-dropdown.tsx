@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import { Select, SelectItem, Spinner } from '@heroui/react';
+import { Autocomplete, AutocompleteItem } from '@heroui/autocomplete';
+import { Spinner } from '@heroui/spinner';
 import type { CountriesList, CountriesApiResponse } from '@/lib/types/countries';
 
 /**
@@ -17,14 +18,15 @@ interface CountryDropdownProps {
 
 /**
  * CountryDropdown component with search functionality
- * Fetches countries from /api/countries and displays them in a searchable dropdown
- * HeroUI Select has built-in search functionality with case-insensitive matching
+ * Fetches countries from /api/countries and displays them in a searchable autocomplete
+ * HeroUI Autocomplete provides built-in search functionality with case-insensitive matching
  */
 export function CountryDropdown({ onCountrySelect }: CountryDropdownProps) {
   const [countries, setCountries] = useState<CountriesList>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
+  const [inputValue, setInputValue] = useState<string>('');
 
   // Fetch countries on component mount
   useEffect(() => {
@@ -60,20 +62,32 @@ export function CountryDropdown({ onCountrySelect }: CountryDropdownProps) {
     fetchCountries();
   }, []);
 
-  // Convert countries to objects for HeroUI Select
+  // Convert countries to objects for HeroUI Autocomplete
   const countryItems = useMemo(() => {
     return countries.map((country) => ({ key: country, label: country }));
   }, [countries]);
 
   // Handle country selection
-  const handleSelectionChange = (keys: 'all' | Set<string | number>) => {
-    if (keys === 'all' || keys.size === 0) {
+  const handleSelectionChange = (key: string | number | null) => {
+    if (key === null) {
       setSelectedCountry(null);
+      setInputValue('');
       onCountrySelect?.(null);
     } else {
-      const selected = Array.from(keys)[0] as string;
+      const selected = key as string;
       setSelectedCountry(selected);
+      setInputValue(selected);
       onCountrySelect?.(selected);
+    }
+  };
+
+  // Handle input value change (for search)
+  const handleInputChange = (value: string) => {
+    setInputValue(value);
+    // Clear selection if user is typing a new search
+    if (value !== selectedCountry) {
+      setSelectedCountry(null);
+      onCountrySelect?.(null);
     }
   };
 
@@ -96,23 +110,24 @@ export function CountryDropdown({ onCountrySelect }: CountryDropdownProps) {
     );
   }
 
-  // Normal state with countries - HeroUI Select has built-in search
+  // Normal state with countries - HeroUI Autocomplete has built-in search
   return (
-    <Select
-      label="Select Country"
-      placeholder="Search countries..."
-      selectedKeys={selectedCountry ? new Set([selectedCountry]) : new Set()}
-      onSelectionChange={handleSelectionChange}
-      selectionMode="single"
-      isClearable={true}
+    <Autocomplete
+      label="Select a Country"
+      placeholder="Search for a country to discover its Christmas traditions..."
+      selectedKey={selectedCountry}
+      allowsCustomValue={false}
       items={countryItems}
+      onSelectionChange={handleSelectionChange}
+      onInputChange={handleInputChange}
+      size="lg"
     >
       {(item) => (
-        <SelectItem key={item.key}>
+        <AutocompleteItem key={item.key}>
           {item.label}
-        </SelectItem>
+        </AutocompleteItem>
       )}
-    </Select>
+    </Autocomplete>
   );
 }
 

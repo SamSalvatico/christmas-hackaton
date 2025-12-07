@@ -6,6 +6,7 @@ import { SantaSearchButton } from '@/components/features/santa-search-button';
 import { DishCard } from '@/components/features/dish-card';
 import { ChristmasSpinner } from '@/components/features/christmas-spinner';
 import { CarolLink } from '@/components/features/carol-link';
+import { ChristmasBaublesBackground } from '@/components/features/christmas-baubles-background';
 import type {
   CountryCulturalData,
   CulturalDataApiResponse,
@@ -81,8 +82,9 @@ export default function HomePage() {
     : [];
 
   return (
-    <main className="min-h-screen" style={{ backgroundColor: christmasColors.white }}>
-      <div className="container mx-auto px-4 py-8 max-w-6xl">
+    <main className="min-h-screen relative" style={{ backgroundColor: christmasColors.white }}>
+      <ChristmasBaublesBackground />
+      <div className="container mx-auto px-4 py-8 max-w-6xl relative z-10">
         {/* Header with funny Christmas title */}
         <div className="text-center mb-8">
           <h1

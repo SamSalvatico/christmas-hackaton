@@ -9,6 +9,8 @@ Auto-generated from all feature plans. Last updated: 2025-12-06
 - In-memory cache (Map-based with TTL) - reuse existing cache utility (004-country-carol)
 - TypeScript 5.9+ (strict mode) + Next.js 16.0.7, React 19.2.1, Node.js 24+, Spotify Web API (005-spotify-carol-link)
 - In-memory cache (Map-based with TTL) - no changes needed (006-improve-api-naming)
+- TypeScript 5.9.3, React 19.2.1, Next.js 16.0.7 + HeroUI (@heroui/react ^2.8.5), Next.js 16, React 19, Framer Motion (for animations) (007-christmas-home-redesign)
+- N/A (client-side state management only) (007-christmas-home-redesign)
 
 - TypeScript 5.1+ (strict mode), Node.js 24 + Next.js 16, React (latest), HeroUI, TypeScrip (001-ssr-web-app)
 
@@ -28,9 +30,9 @@ npm test && npm run lint
 TypeScript 5.1+ (strict mode), Node.js 24: Follow standard conventions
 
 ## Recent Changes
+- 007-christmas-home-redesign: Added TypeScript 5.9.3, React 19.2.1, Next.js 16.0.7 + HeroUI (@heroui/react ^2.8.5), Next.js 16, React 19, Framer Motion (for animations)
 - 006-improve-api-naming: Added TypeScript 5.9+ (strict mode) + Next.js 16.0.7, React 19.2.1, Node.js 24+
 - 005-spotify-carol-link: Added TypeScript 5.9+ (strict mode) + Next.js 16.0.7, React 19.2.1, Node.js 24+, Spotify Web API
-- 004-country-carol: Added TypeScript 5.9+ (strict mode) + Next.js 16.0.7, React 19.2.1, OpenAI SDK (openai), Node.js 24+
 
 
 <!-- MANUAL ADDITIONS START -->

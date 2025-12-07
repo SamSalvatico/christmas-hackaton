@@ -81,12 +81,16 @@ export default function HomePage() {
       ]
     : [];
 
+  // Check if we should show centered layout (no data, not loading, no error)
+  const hasData = culturalData && (dishes.length > 0 || culturalData.carol);
+  const showCentered = !hasData && !isLoading && !error;
+
   return (
     <main className="min-h-screen relative" style={{ backgroundColor: christmasColors.white }}>
       <ChristmasBaublesBackground />
-      <div className="container mx-auto px-4 py-8 max-w-6xl relative z-10">
-        {/* Header with funny Christmas title */}
-        <div className="text-center mb-8">
+      <div className="container mx-auto px-4 max-w-6xl relative z-10">
+        {/* Header with funny Christmas title - always visible and fixed at top */}
+        <div className="text-center py-8">
           <h1
             className="text-3xl md:text-5xl font-bold mb-4"
             style={{ color: christmasColors.red }}
@@ -99,7 +103,9 @@ export default function HomePage() {
         </div>
 
         {/* Centered search section */}
-        <div className="flex flex-col items-center justify-center mb-8">
+        <div className={`flex flex-col items-center justify-center transition-all duration-700 ease-in-out ${
+          showCentered ? 'min-h-[calc(100vh-200px)] mb-0' : 'mb-8'
+        }`}>
           <div className="w-full max-w-md space-y-4">
             <CountryDropdown onCountrySelect={setSelectedCountry} />
             <div className="flex justify-center">

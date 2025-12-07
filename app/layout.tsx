@@ -4,8 +4,11 @@ import { Providers } from '@/components/providers';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Christmas Hackathon App',
-  description: 'SSR Web Application with AI Integration',
+  title: "Santa's Global Feast Finder",
+  description: 'Discover Christmas traditions from around the world',
+  icons: {
+    icon: '/favicon.svg',
+  },
 };
 
 export default function RootLayout({

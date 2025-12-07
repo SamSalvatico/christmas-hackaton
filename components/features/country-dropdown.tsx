@@ -110,7 +110,7 @@ export function CountryDropdown({ onCountrySelect }: CountryDropdownProps) {
   return (
     <Autocomplete
       label="Select a Country"
-      placeholder="Search for a country to discover its Christmas traditions..."
+      placeholder="Search for a country"
       selectedKey={selectedCountry}
       allowsCustomValue={false}
       defaultItems={countryItems}

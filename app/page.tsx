@@ -88,23 +88,23 @@ export default function HomePage() {
   return (
     <main className="min-h-screen relative" style={{ backgroundColor: christmasColors.white }}>
       <ChristmasBaublesBackground />
-      <div className="container mx-auto px-4 max-w-6xl relative z-10">
+      <div className="container mx-auto px-4 max-w-6xl relative z-10 mb-16">
         {/* Header with funny Christmas title - always visible and fixed at top */}
         <div className="text-center py-8">
           <h1
-            className="text-3xl md:text-5xl font-bold mb-4"
-            style={{ color: christmasColors.red }}
+            className="text-3xl md:text-5xl font-bold christmas-font mb-6"
+            style={{ color: christmasColors.red, lineHeight: '1.7' }}
           >
-            🎄 Santa&apos;s Global Feast Finder 🎄
+            Santa&apos;s Global Feast Finder
           </h1>
-          <p className="text-lg md:text-xl text-gray-700">
+          <p className="text-lg md:text-xl text-gray-700 christmas-font">
             Discover Christmas traditions from around the world
           </p>
         </div>
 
         {/* Centered search section */}
         <div className={`flex flex-col items-center justify-center transition-all duration-700 ease-in-out ${
-          showCentered ? 'min-h-[calc(100vh-200px)] mb-0' : 'mb-8'
+          showCentered ? 'min-h-[calc(100vh-400px)] mb-0' : 'mb-8'
         }`}>
           <div className="w-full max-w-md space-y-4">
             <CountryDropdown onCountrySelect={setSelectedCountry} />
@@ -172,7 +172,7 @@ export default function HomePage() {
 
             {/* Carol Link */}
             {culturalData.carol && (
-              <div className="flex justify-center">
+              <div className="flex justify-center mb-16">
                 <div className="w-full max-w-2xl">
                   <CarolLink
                     carol={culturalData.carol}

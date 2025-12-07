@@ -20,7 +20,7 @@ export interface CarolLinkProps {
  */
 export function CarolLink({ carol, spotifyUrl }: CarolLinkProps) {
   return (
-    <div className="p-6 bg-green-50 border-2 rounded-lg" style={{ borderColor: christmasColors.green }}>
+    <div className="p-6 bg-green-50 border-2 rounded-lg card-font" style={{ borderColor: christmasColors.green }}>
       <h3 className="text-xl font-bold mb-2" style={{ color: christmasColors.darkGreen }}>
         🎄 Christmas Carol: {carol.name}
       </h3>

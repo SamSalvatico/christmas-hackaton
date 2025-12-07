@@ -41,7 +41,7 @@ export function DishCard({ dish, dishType, className }: DishCardProps) {
 
   return (
     <Card
-      className={className}
+      className={`card-font ${className || ''}`}
       style={{
         borderColor: dishTypeColor,
         borderWidth: '2px',

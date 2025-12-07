@@ -27,6 +27,7 @@ body {
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb));
+  font-family: var(--font-christmas), cursive;
 }
 
 @keyframes fadeIn {
@@ -40,5 +41,13 @@ body {
 
 .animate-fade-in {
   animation: fadeIn 0.7s ease-in-out forwards;
+}
+
+.christmas-font {
+  font-family: var(--font-christmas), cursive;
+}
+
+.card-font {
+  font-family: var(--font-card), cursive;
 }
 

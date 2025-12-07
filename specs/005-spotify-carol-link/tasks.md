@@ -24,8 +24,8 @@
 
 **Purpose**: Project initialization and environment configuration
 
-- [ ] T001 Add Spotify environment variables to `.env.sample` file with placeholder values for `SPOTIFY_CLIENT_ID` and `SPOTIFY_CLIENT_SECRET`
-- [ ] T002 Update `.env.local` file (if exists) or document requirement for `SPOTIFY_CLIENT_ID` and `SPOTIFY_CLIENT_SECRET` environment variables
+- [x] T001 Add Spotify environment variables to `.env.sample` file with placeholder values for `SPOTIFY_CLIENT_ID` and `SPOTIFY_CLIENT_SECRET`
+- [x] T002 Update `.env.local` file (if exists) or document requirement for `SPOTIFY_CLIENT_ID` and `SPOTIFY_CLIENT_SECRET` environment variables
 
 ---
 
@@ -35,9 +35,9 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T003 [P] Create TypeScript types for Spotify API responses in `lib/types/spotify.ts` including `SpotifyAccessToken`, `SpotifySearchResponse`, `SpotifyTracksObject`, `SpotifyTrack`, and `SpotifyExternalUrls` interfaces
-- [ ] T004 [P] Extend `CountryCulturalData` type in `lib/types/dishes.ts` to include optional `spotifyUrl: string | null` field, creating `CountryCulturalDataWithSpotify` type or extending existing type
-- [ ] T005 [P] Update `CountryCulturalApiSuccessResponse` type in `lib/types/dishes.ts` to reflect the extended response structure with `spotifyUrl` field
+- [x] T003 [P] Create TypeScript types for Spotify API responses in `lib/types/spotify.ts` including `SpotifyAccessToken`, `SpotifySearchResponse`, `SpotifyTracksObject`, `SpotifyTrack`, and `SpotifyExternalUrls` interfaces
+- [x] T004 [P] Extend `CountryCulturalData` type in `lib/types/dishes.ts` to include optional `spotifyUrl: string | null` field, creating `CountryCulturalDataWithSpotify` type or extending existing type
+- [x] T005 [P] Update `CountryCulturalApiSuccessResponse` type in `lib/types/dishes.ts` to reflect the extended response structure with `spotifyUrl` field
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
@@ -51,14 +51,14 @@
 
 ### Implementation for User Story 1
 
-- [ ] T006 [P] [US1] Create `getSpotifyAccessToken` function in `lib/api/spotify-service.ts` that implements OAuth2 client credentials flow: reads `SPOTIFY_CLIENT_ID` and `SPOTIFY_CLIENT_SECRET` from environment, encodes to base64, requests token from `https://accounts.spotify.com/api/token`, and returns `SpotifyAccessToken`
-- [ ] T007 [US1] Implement token caching logic in `getSpotifyAccessToken` function in `lib/api/spotify-service.ts` using existing cache utility with key `spotify-access-token` and TTL based on `expires_in` from token response
-- [ ] T008 [US1] Create `searchSpotifyTrack` function in `lib/api/spotify-service.ts` that takes a carol name, URL-encodes it, calls `GET https://api.spotify.com/v1/search?q={encodedName}&type=track&limit=1&offset=0` with Bearer token, and returns `SpotifySearchResponse`
-- [ ] T009 [US1] Create `extractSpotifyUrl` function in `lib/api/spotify-service.ts` that safely extracts URL from `tracks.items[0].external_urls.spotify` using optional chaining, returns `string | null` (null if no results or missing URL)
-- [ ] T010 [US1] Create `searchSpotifyForCarol` function in `lib/api/spotify-service.ts` that orchestrates the full flow: checks cache for Spotify URL (key: `spotify-url:${carolName.toLowerCase()}`), if cache miss gets access token (with caching), searches Spotify, extracts URL, caches valid URLs for 20 minutes (1,200,000ms), returns `string | null`
-- [ ] T011 [US1] Add error handling in `searchSpotifyForCarol` function in `lib/api/spotify-service.ts` for rate limiting (429), authentication errors (401 with token refresh retry), network timeouts, and API errors - all should return `null` gracefully without throwing
-- [ ] T012 [US1] Update `POST /api/dishes` route handler in `app/api/dishes/route.ts` to call `searchSpotifyForCarol` after retrieving cultural data, only if `carol` is not null, and include `spotifyUrl` in the response data
-- [ ] T013 [US1] Update response type in `app/api/dishes/route.ts` to use extended type with `spotifyUrl` field, ensuring TypeScript types are correct
+- [x] T006 [P] [US1] Create `getSpotifyAccessToken` function in `lib/api/spotify-service.ts` that implements OAuth2 client credentials flow: reads `SPOTIFY_CLIENT_ID` and `SPOTIFY_CLIENT_SECRET` from environment, encodes to base64, requests token from `https://accounts.spotify.com/api/token`, and returns `SpotifyAccessToken`
+- [x] T007 [US1] Implement token caching logic in `getSpotifyAccessToken` function in `lib/api/spotify-service.ts` using existing cache utility with key `spotify-access-token` and TTL based on `expires_in` from token response
+- [x] T008 [US1] Create `searchSpotifyTrack` function in `lib/api/spotify-service.ts` that takes a carol name, URL-encodes it, calls `GET https://api.spotify.com/v1/search?q={encodedName}&type=track&limit=1&offset=0` with Bearer token, and returns `SpotifySearchResponse`
+- [x] T009 [US1] Create `extractSpotifyUrl` function in `lib/api/spotify-service.ts` that safely extracts URL from `tracks.items[0].external_urls.spotify` using optional chaining, returns `string | null` (null if no results or missing URL)
+- [x] T010 [US1] Create `searchSpotifyForCarol` function in `lib/api/spotify-service.ts` that orchestrates the full flow: checks cache for Spotify URL (key: `spotify-url:${carolName.toLowerCase()}`), if cache miss gets access token (with caching), searches Spotify, extracts URL, caches valid URLs for 20 minutes (1,200,000ms), returns `string | null`
+- [x] T011 [US1] Add error handling in `searchSpotifyForCarol` function in `lib/api/spotify-service.ts` for rate limiting (429), authentication errors (401 with token refresh retry), network timeouts, and API errors - all should return `null` gracefully without throwing
+- [x] T012 [US1] Update `POST /api/dishes` route handler in `app/api/dishes/route.ts` to call `searchSpotifyForCarol` after retrieving cultural data, only if `carol` is not null, and include `spotifyUrl` in the response data
+- [x] T013 [US1] Update response type in `app/api/dishes/route.ts` to use extended type with `spotifyUrl` field, ensuring TypeScript types are correct
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently. The system should automatically search Spotify when a carol is available and return the URL in the API response.
 
@@ -72,11 +72,11 @@
 
 ### Implementation for User Story 2
 
-- [ ] T014 [P] [US2] Update `CountryCulturalData` type usage in `app/page.tsx` to handle the new `spotifyUrl` field (if type was extended) or use the extended type
-- [ ] T015 [US2] Update the results display section in `app/page.tsx` to show Spotify URL when available: display as clickable link with text "Listen on Spotify" or the URL itself, styled consistently with existing UI
-- [ ] T016 [US2] Add "not found on spotify" message display in `app/page.tsx` when `spotifyUrl` is `null` but `carol` is not null (indicating search was performed but no results found)
-- [ ] T017 [US2] Ensure Spotify link opens in new tab/window with `target="_blank"` and `rel="noopener noreferrer"` attributes in `app/page.tsx`
-- [ ] T018 [US2] Update JSON display (if still showing raw JSON) in `app/page.tsx` to include `spotifyUrl` field in the displayed data structure
+- [x] T014 [P] [US2] Update `CountryCulturalData` type usage in `app/page.tsx` to handle the new `spotifyUrl` field (if type was extended) or use the extended type
+- [x] T015 [US2] Update the results display section in `app/page.tsx` to show Spotify URL when available: display as clickable link with text "Listen on Spotify" or the URL itself, styled consistently with existing UI
+- [x] T016 [US2] Add "not found on spotify" message display in `app/page.tsx` when `spotifyUrl` is `null` but `carol` is not null (indicating search was performed but no results found)
+- [x] T017 [US2] Ensure Spotify link opens in new tab/window with `target="_blank"` and `rel="noopener noreferrer"` attributes in `app/page.tsx`
+- [x] T018 [US2] Update JSON display (if still showing raw JSON) in `app/page.tsx` to include `spotifyUrl` field in the displayed data structure
 
 **Checkpoint**: At this point, User Stories 1 AND 2 should both work independently. Users should see the Spotify URL displayed on the page when available, and a "not found on spotify" message when the search returned no results.
 
@@ -86,15 +86,15 @@
 
 **Purpose**: Improvements that affect multiple user stories
 
-- [ ] T019 [P] Add JSDoc comments to all new functions in `lib/api/spotify-service.ts` explaining parameters, return values, and error handling behavior
-- [ ] T020 [P] Add error logging for Spotify API errors in `lib/api/spotify-service.ts` using console.error or appropriate logging mechanism, ensuring sensitive data (tokens, secrets) are not logged
-- [ ] T021 [P] Verify environment variable validation in `lib/api/spotify-service.ts` throws clear error messages if `SPOTIFY_CLIENT_ID` or `SPOTIFY_CLIENT_SECRET` are missing
-- [ ] T022 [P] Add timeout handling (5 seconds) for Spotify API calls in `lib/api/spotify-service.ts` using AbortController or fetch timeout mechanism
-- [ ] T023 [P] Verify cache key normalization (lowercase carol names) in `searchSpotifyForCarol` function in `lib/api/spotify-service.ts` to ensure consistent caching
-- [ ] T024 [P] Test graceful degradation: verify that when Spotify API fails, cultural data is still returned with `spotifyUrl: null` in `app/api/dishes/route.ts`
-- [ ] T025 [P] Run quickstart.md validation: test the complete flow from country selection to Spotify URL display, verify all scenarios from quickstart.md work correctly
-- [ ] T026 [P] Verify TypeScript compilation passes without errors: run `npm run build` or `tsc --noEmit` to ensure all types are correct
-- [ ] T027 [P] Verify linting passes: run `npm run lint` to ensure code follows project style guidelines
+- [x] T019 [P] Add JSDoc comments to all new functions in `lib/api/spotify-service.ts` explaining parameters, return values, and error handling behavior
+- [x] T020 [P] Add error logging for Spotify API errors in `lib/api/spotify-service.ts` using console.error or appropriate logging mechanism, ensuring sensitive data (tokens, secrets) are not logged
+- [x] T021 [P] Verify environment variable validation in `lib/api/spotify-service.ts` throws clear error messages if `SPOTIFY_CLIENT_ID` or `SPOTIFY_CLIENT_SECRET` are missing
+- [x] T022 [P] Add timeout handling (5 seconds) for Spotify API calls in `lib/api/spotify-service.ts` using AbortController or fetch timeout mechanism
+- [x] T023 [P] Verify cache key normalization (lowercase carol names) in `searchSpotifyForCarol` function in `lib/api/spotify-service.ts` to ensure consistent caching
+- [x] T024 [P] Test graceful degradation: verify that when Spotify API fails, cultural data is still returned with `spotifyUrl: null` in `app/api/dishes/route.ts`
+- [x] T025 [P] Run quickstart.md validation: test the complete flow from country selection to Spotify URL display, verify all scenarios from quickstart.md work correctly
+- [x] T026 [P] Verify TypeScript compilation passes without errors: run `npm run build` or `tsc --noEmit` to ensure all types are correct
+- [x] T027 [P] Verify linting passes: run `npm run lint` to ensure code follows project style guidelines
 
 ---
 

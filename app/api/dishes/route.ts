@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cache } from '@/lib/utils/cache';
 import { queryDishesAndCarolWithRetry } from '@/lib/api/openai-service';
+import { searchSpotifyForCarol } from '@/lib/api/spotify-service';
 import type {
   DishesApiRequest,
   CountryCulturalApiResponse,
@@ -66,7 +67,7 @@ export async function POST(request: NextRequest) {
     const cacheKey = getCacheKey(countryName);
     const cachedData = cache.get<CountryCulturalData>(cacheKey);
     if (cachedData) {
-      // Cache hit - return cached data
+      // Cache hit - return cached data (includes spotifyUrl if previously searched)
       return NextResponse.json<CountryCulturalApiResponse>({
         success: true,
         data: cachedData,
@@ -77,12 +78,30 @@ export async function POST(request: NextRequest) {
     try {
       const culturalData = await queryDishesAndCarolWithRetry(countryName);
 
+      // Search Spotify for carol if available
+      let spotifyUrl: string | null = null;
+      if (culturalData.carol) {
+        try {
+          spotifyUrl = await searchSpotifyForCarol(culturalData.carol.name);
+        } catch (error) {
+          // Log error but don't fail the request - graceful degradation
+          console.error('Spotify search error:', error);
+          spotifyUrl = null;
+        }
+      }
+
+      // Add Spotify URL to cultural data
+      const culturalDataWithSpotify: CountryCulturalData = {
+        ...culturalData,
+        spotifyUrl,
+      };
+
       // Store valid response in cache (only if validation passed)
-      cache.set(cacheKey, culturalData, CACHE_TTL);
+      cache.set(cacheKey, culturalDataWithSpotify, CACHE_TTL);
 
       return NextResponse.json<CountryCulturalApiResponse>({
         success: true,
-        data: culturalData,
+        data: culturalDataWithSpotify,
       });
     } catch (error) {
       // Handle OpenAI query errors

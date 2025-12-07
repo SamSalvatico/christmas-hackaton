@@ -49,6 +49,8 @@ export interface CountryCulturalData {
   dishes: DishesResponse;
   /** Christmas carol or null if not available */
   carol: ChristmasCarol | null;
+  /** Spotify URL for the carol or null if not found/not available */
+  spotifyUrl?: string | null;
 }
 
 /**

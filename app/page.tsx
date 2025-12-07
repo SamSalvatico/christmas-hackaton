@@ -70,6 +70,7 @@ export default function HomePage() {
               : null,
           },
           carol: result.data.carol,
+          spotifyUrl: result.data.spotifyUrl ?? null,
         };
         setCulturalData(truncatedData);
       } else if (!result.success && 'error' in result) {
@@ -171,6 +172,35 @@ export default function HomePage() {
             <h2 className="text-xl font-semibold mb-4">
               Cultural Data for {selectedCountry}
             </h2>
+            
+            {/* Spotify Link Display */}
+            {culturalData.carol && (
+              <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded">
+                <h3 className="font-semibold text-lg mb-2">
+                  Christmas Carol: {culturalData.carol.name}
+                </h3>
+                {culturalData.carol.author && (
+                  <p className="text-sm text-gray-600 mb-2">
+                    by {culturalData.carol.author}
+                  </p>
+                )}
+                {culturalData.spotifyUrl ? (
+                  <a
+                    href={culturalData.spotifyUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
+                  >
+                    🎵 Listen on Spotify
+                  </a>
+                ) : (
+                  <p className="text-gray-600 italic">
+                    not found on spotify
+                  </p>
+                )}
+              </div>
+            )}
+
             <pre className="bg-gray-50 p-4 rounded overflow-auto text-sm">
               {JSON.stringify(culturalData, null, 2)}
             </pre>

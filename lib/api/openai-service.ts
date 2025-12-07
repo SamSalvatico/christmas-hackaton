@@ -33,7 +33,7 @@ function initializeOpenAIClient(): OpenAI {
  */
 export function buildCombinedPrompt(countryName: string): string {
   return `For the country "${countryName}", provide:
-1. The most famous dishes in JSON format
+1. the most famous traditional dishes eaten during the Christmas holidays in JSON format
 2. A famous Christmas carol from this country
 
 For dishes, return exactly one dish for each category (entry/appetizer, main course, dessert) if available.

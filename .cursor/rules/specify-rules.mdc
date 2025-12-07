@@ -1,0 +1,29 @@
+# christmas-hackaton Development Guidelines
+
+Auto-generated from all feature plans. Last updated: 2025-12-06
+
+## Active Technologies
+
+- TypeScript 5.1+ (strict mode), Node.js 24 + Next.js 16, React (latest), HeroUI, TypeScrip (001-ssr-web-app)
+
+## Project Structure
+
+```text
+src/
+tests/
+```
+
+## Commands
+
+npm test && npm run lint
+
+## Code Style
+
+TypeScript 5.1+ (strict mode), Node.js 24: Follow standard conventions
+
+## Recent Changes
+
+- 001-ssr-web-app: Added TypeScript 5.1+ (strict mode), Node.js 24 + Next.js 16, React (latest), HeroUI, TypeScrip
+
+<!-- MANUAL ADDITIONS START -->
+<!-- MANUAL ADDITIONS END -->

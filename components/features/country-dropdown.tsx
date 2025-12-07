@@ -26,7 +26,6 @@ export function CountryDropdown({ onCountrySelect }: CountryDropdownProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
-  const [inputValue, setInputValue] = useState<string>('');
 
   // Fetch countries on component mount
   useEffect(() => {
@@ -71,21 +70,18 @@ export function CountryDropdown({ onCountrySelect }: CountryDropdownProps) {
   const handleSelectionChange = (key: string | number | null) => {
     if (key === null) {
       setSelectedCountry(null);
-      setInputValue('');
       onCountrySelect?.(null);
     } else {
       const selected = key as string;
       setSelectedCountry(selected);
-      setInputValue(selected);
       onCountrySelect?.(selected);
     }
   };
 
-  // Handle input value change (for search)
+  // Handle input value change (for search) - clear selection when user types
   const handleInputChange = (value: string) => {
-    setInputValue(value);
-    // Clear selection if user is typing a new search
-    if (value !== selectedCountry) {
+    // Clear selection if user is typing a new search that doesn't match current selection
+    if (value !== selectedCountry && value !== '') {
       setSelectedCountry(null);
       onCountrySelect?.(null);
     }
@@ -121,9 +117,17 @@ export function CountryDropdown({ onCountrySelect }: CountryDropdownProps) {
       onSelectionChange={handleSelectionChange}
       onInputChange={handleInputChange}
       size="lg"
+      classNames={{
+        listbox: 'text-gray-900 bg-white',
+        popoverContent: 'bg-white',
+      }}
     >
       {(item) => (
-        <AutocompleteItem key={item.key}>
+        <AutocompleteItem
+          key={item.key}
+          textValue={item.label}
+          className="text-gray-900 data-[hover=true]:bg-gray-100 data-[focus=true]:bg-gray-100"
+        >
           {item.label}
         </AutocompleteItem>
       )}

@@ -110,8 +110,11 @@ export default function HomePage() {
         </div>
 
         {/* Loading State */}
-        {isLoading && <ChristmasSpinner />}
-
+        {isLoading && (
+          <div className="flex flex-col items-center justify-center mb-8">
+            <ChristmasSpinner />
+          </div>
+        )}
         {/* Error State */}
         {error && !isLoading && (
           <div

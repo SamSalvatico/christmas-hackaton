@@ -113,7 +113,7 @@ export function CountryDropdown({ onCountrySelect }: CountryDropdownProps) {
       placeholder="Search for a country to discover its Christmas traditions..."
       selectedKey={selectedCountry}
       allowsCustomValue={false}
-      items={countryItems}
+      defaultItems={countryItems}
       onSelectionChange={handleSelectionChange}
       onInputChange={handleInputChange}
       size="lg"

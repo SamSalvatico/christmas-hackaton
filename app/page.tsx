@@ -1,6 +1,13 @@
+'use client';
+
+import { useState } from 'react';
 import Link from 'next/link';
+import { CountryDropdown } from '@/components/features/country-dropdown';
+import { SantaSearchButton } from '@/components/features/santa-search-button';
 
 export default function HomePage() {
+  const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
+
   return (
     <main className="container mx-auto p-8">
       <div className="max-w-4xl mx-auto">
@@ -28,6 +35,14 @@ export default function HomePage() {
               <li>External Data Integration</li>
               <li>AI-Powered Processing</li>
             </ul>
+          </div>
+        </div>
+
+        <div className="border rounded-lg p-6 mb-8">
+          <h2 className="text-xl font-semibold mb-4">Country Search</h2>
+          <div className="max-w-md space-y-4">
+            <CountryDropdown onCountrySelect={setSelectedCountry} />
+            <SantaSearchButton selectedCountry={selectedCountry} />
           </div>
         </div>
 

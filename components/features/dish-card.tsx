@@ -1,7 +1,7 @@
 'use client';
 
-import { Card, CardHeader, CardBody } from '@heroui/card';
-import type { Dish } from '@/lib/types/cultural-data';
+import { Card, CardHeader, CardBody, Tooltip } from '@heroui/react';
+import type { Dish, SearchMode } from '@/lib/types/cultural-data';
 import { getDishTypeColor } from '@/lib/utils/christmas-theme';
 
 /**
@@ -14,6 +14,10 @@ export interface DishCardProps {
   dishType: 'Entry' | 'Main Course' | 'Dessert';
   /** Optional CSS classes for additional styling */
   className?: string;
+  /** Callback when dish name is clicked to view recipe */
+  onRecipeClick?: (dishName: string, country: string) => void;
+  /** Currently selected search mode */
+  selectedMode?: SearchMode;
 }
 
 /**
@@ -32,12 +36,25 @@ function truncateIngredients(ingredients: string[]): string[] {
  * DishCard component
  * Displays individual dish information in a card format with Christmas-themed styling
  */
-export function DishCard({ dish, dishType, className }: DishCardProps) {
+export function DishCard({
+  dish,
+  dishType,
+  className,
+  onRecipeClick,
+  selectedMode,
+}: DishCardProps) {
   const dishTypeColor = getDishTypeColor(
     dish.type || (dishType === 'Entry' ? 'entry' : dishType === 'Main Course' ? 'main' : 'dessert')
   );
 
   const truncatedIngredients = truncateIngredients(dish.ingredients);
+
+  const handleDishNameClick = () => {
+    if (onRecipeClick && dish.name) {
+      // Pass only dish name, country will be handled by parent
+      onRecipeClick(dish.name, '');
+    }
+  };
 
   return (
     <Card
@@ -48,9 +65,27 @@ export function DishCard({ dish, dishType, className }: DishCardProps) {
       }}
     >
       <CardHeader className="flex flex-col items-start gap-2">
-        <h3 className="text-xl font-bold" style={{ color: dishTypeColor }}>
-          {dish.name}
-        </h3>
+        {onRecipeClick ? (
+          <Tooltip
+            content="View the recipe"
+            classNames={{
+              content: 'text-gray-900 bg-white',
+            }}
+          >
+            <button
+              onClick={handleDishNameClick}
+              className="text-xl font-bold cursor-pointer hover:underline focus:outline-none focus:ring-2 focus:ring-offset-2 rounded"
+              style={{ color: dishTypeColor }}
+              aria-label={`View recipe for ${dish.name}`}
+            >
+              {dish.name}
+            </button>
+          </Tooltip>
+        ) : (
+          <h3 className="text-xl font-bold" style={{ color: dishTypeColor }}>
+            {dish.name}
+          </h3>
+        )}
         <p className="text-sm font-semibold text-gray-600">{dishType}</p>
       </CardHeader>
       <CardBody className="pt-0">

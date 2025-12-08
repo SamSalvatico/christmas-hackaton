@@ -15,7 +15,7 @@ const REST_COUNTRIES_URL =
 /**
  * Cache key for countries list
  */
-const CACHE_KEY = 'countries';
+export const COUNTRIES_CACHE_KEY = 'countries';
 
 /**
  * Cache TTL: 10 minutes in milliseconds
@@ -78,7 +78,7 @@ async function fetchCountriesFromAPI(): Promise<CountriesList> {
 export async function GET(_request: NextRequest): Promise<NextResponse> {
   try {
     // Check cache first
-    const cachedCountries = cache.get<CountriesList>(CACHE_KEY);
+    const cachedCountries = cache.get<CountriesList>(COUNTRIES_CACHE_KEY);
 
     if (cachedCountries) {
       // Cache hit - return cached data
@@ -94,7 +94,7 @@ export async function GET(_request: NextRequest): Promise<NextResponse> {
       const countries = await fetchCountriesFromAPI();
 
       // Store in cache with TTL
-      cache.set(CACHE_KEY, countries, CACHE_TTL);
+      cache.set(COUNTRIES_CACHE_KEY, countries, CACHE_TTL);
 
       const response: CountriesApiResponse = {
         success: true,
@@ -103,7 +103,7 @@ export async function GET(_request: NextRequest): Promise<NextResponse> {
       return NextResponse.json(response);
     } catch (apiError) {
       // API fetch failed - check if we have expired cache as fallback
-      const expiredCache = cache.get<CountriesList>(CACHE_KEY);
+      const expiredCache = cache.get<CountriesList>(COUNTRIES_CACHE_KEY);
 
       if (expiredCache) {
         // Return expired cache as fallback (better than nothing)

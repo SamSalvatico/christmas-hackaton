@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
   try {
     // Parse and validate request body
     const body: CulturalDataApiRequest = await request.json();
-
+    
     if (!body.country || typeof body.country !== 'string' || body.country.trim().length === 0) {
       return NextResponse.json<CulturalDataApiResponse>(
         {

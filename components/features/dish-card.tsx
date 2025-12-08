@@ -41,7 +41,6 @@ export function DishCard({
   dishType,
   className,
   onRecipeClick,
-  selectedMode,
 }: DishCardProps) {
   const dishTypeColor = getDishTypeColor(
     dish.type || (dishType === 'Entry' ? 'entry' : dishType === 'Main Course' ? 'main' : 'dessert')

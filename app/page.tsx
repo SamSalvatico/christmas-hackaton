@@ -282,7 +282,6 @@ export default function HomePage() {
                           handleRecipeClick(dishName, selectedCountry);
                         }
                       }}
-                      selectedMode={selectedMode}
                     />
                   ))}
                 </div>

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { CountryDropdown } from '@/components/features/country-dropdown';
 import { SantaSearchButton } from '@/components/features/santa-search-button';
+import { SearchModeSelector } from '@/components/features/search-mode-selector';
 import { DishCard } from '@/components/features/dish-card';
 import { ChristmasSpinner } from '@/components/features/christmas-spinner';
 import { CarolLink } from '@/components/features/carol-link';
@@ -10,20 +11,25 @@ import { ChristmasBaublesBackground } from '@/components/features/christmas-baub
 import type {
   CountryCulturalData,
   CulturalDataApiResponse,
+  SearchMode,
 } from '@/lib/types/cultural-data';
 import { christmasColors } from '@/lib/utils/christmas-theme';
 
 /**
  * Fetch cultural data (dishes, carol, and Spotify URL) for the selected country from the API
  * @param country - Country name to fetch cultural data for
+ * @param mode - Search mode ('fast' or 'detailed')
  */
-async function fetchCulturalData(country: string): Promise<CulturalDataApiResponse> {
+async function fetchCulturalData(
+  country: string,
+  mode: SearchMode
+): Promise<CulturalDataApiResponse> {
   const response = await fetch('/api/cultural-data', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ country }),
+    body: JSON.stringify({ country, mode }),
   });
 
   return response.json();
@@ -31,6 +37,7 @@ async function fetchCulturalData(country: string): Promise<CulturalDataApiRespon
 
 export default function HomePage() {
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
+  const [selectedMode, setSelectedMode] = useState<SearchMode>('fast');
   const [culturalData, setCulturalData] = useState<CountryCulturalData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -46,7 +53,7 @@ export default function HomePage() {
     setIsLoading(true);
 
     try {
-      const result = await fetchCulturalData(country);
+      const result = await fetchCulturalData(country, selectedMode);
 
       if (result.success && result.data) {
         setCulturalData(result.data);
@@ -108,6 +115,10 @@ export default function HomePage() {
         }`}>
           <div className="w-full max-w-md space-y-4">
             <CountryDropdown onCountrySelect={setSelectedCountry} />
+            <SearchModeSelector
+              selectedMode={selectedMode}
+              onModeChange={setSelectedMode}
+            />
             <div className="flex justify-center">
               <SantaSearchButton
                 selectedCountry={selectedCountry}

@@ -8,7 +8,16 @@ import type {
   DishesResponse,
   ChristmasCarol,
   CountryCulturalData,
+  SearchMode,
 } from '@/lib/types/cultural-data';
+
+/**
+ * Model mapping from search mode to OpenAI model names
+ */
+export const MODEL_MAP: Record<SearchMode, string> = {
+  fast: 'gpt-3.5-turbo',
+  detailed: 'o4-mini', // Note: Verify actual model name
+};
 
 /**
  * Initialize OpenAI client with API key from environment variable
@@ -83,17 +92,19 @@ IMPORTANT: You must respond with valid JSON only. Ensure:
 /**
  * Query OpenAI API for cultural data (dishes and carol) of a country
  * @param prompt - Prompt string to send to OpenAI
+ * @param model - OpenAI model name to use (e.g., 'gpt-3.5-turbo', 'o4-mini')
  * @returns Parsed JSON response string from OpenAI
  * @throws Error if OpenAI API call fails
  */
 async function queryDishesAndCarolForCountry(
-  prompt: string
+  prompt: string,
+  model: string = 'gpt-3.5-turbo'
 ): Promise<string> {
   const openai = initializeOpenAIClient();
 
   try {
     const response = await openai.chat.completions.create({
-      model: 'gpt-3.5-turbo',
+      model,
       messages: [
         {
           role: 'user',
@@ -298,19 +309,24 @@ export function validateCombinedData(data: CountryCulturalData): boolean {
 /**
  * Query cultural data (dishes and carol) for a country with automatic retry on invalid/malformed responses
  * @param countryName - Name of the country to query cultural data for
+ * @param mode - Search mode ('fast' or 'detailed'), defaults to 'fast'
  * @returns Validated CountryCulturalData
  * @throws Error if query fails after retry or validation fails
  */
 export async function queryCulturalDataWithRetry(
-  countryName: string
+  countryName: string,
+  mode: SearchMode = 'fast'
 ): Promise<CountryCulturalData> {
+  // Get model from mode mapping
+  const model = MODEL_MAP[mode];
+
   // First attempt with standard prompt
   let prompt = buildCombinedPrompt(countryName);
   let jsonString: string;
   let parsedResponse: CountryCulturalData;
 
   try {
-    jsonString = await queryDishesAndCarolForCountry(prompt);
+    jsonString = await queryDishesAndCarolForCountry(prompt, model);
     parsedResponse = parseCombinedResponse(jsonString, countryName);
   } catch (error) {
     // If parsing fails, try with refined prompt
@@ -320,7 +336,7 @@ export async function queryCulturalDataWithRetry(
       // Retry with refined prompt
       prompt = buildRefinedCombinedPrompt(countryName);
       try {
-        jsonString = await queryDishesAndCarolForCountry(prompt);
+        jsonString = await queryDishesAndCarolForCountry(prompt, model);
         parsedResponse = parseCombinedResponse(jsonString, countryName);
       } catch (retryError) {
         const retryErrorMessage =
@@ -340,7 +356,7 @@ export async function queryCulturalDataWithRetry(
     // If validation fails, try with refined prompt
     prompt = buildRefinedCombinedPrompt(countryName);
     try {
-      jsonString = await queryDishesAndCarolForCountry(prompt);
+      jsonString = await queryDishesAndCarolForCountry(prompt, model);
       parsedResponse = parseCombinedResponse(jsonString, countryName);
 
       // Validate again

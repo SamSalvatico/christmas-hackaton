@@ -51,3 +51,15 @@ export interface RestCountriesItem {
 // REST Countries API Response
 export type RestCountriesResponse = RestCountriesItem[];
 
+/**
+ * Validation result for country name validation
+ * @property isValid - Whether the country name is valid
+ * @property countryName - The normalized (trimmed) country name that was validated
+ * @property error - Error message (only present if isValid is false)
+ */
+export interface ValidationResult {
+  isValid: boolean;
+  countryName: string;
+  error?: string;
+}
+

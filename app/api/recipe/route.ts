@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cache } from '@/lib/utils/cache';
 import { queryRecipeWithRetry } from '@/lib/api/openai-service';
+import { validateCountry } from '@/lib/api/countries-service';
 import type {
   RecipeApiRequest,
   RecipeApiResponse,
@@ -37,6 +38,14 @@ function getRecipeCacheKey(
  * Queries OpenAI to retrieve step-by-step recipe instructions for a specific dish from a country.
  * Uses the selected search mode (fast or detailed) to generate recipes with appropriate detail level.
  * Implements independent caching per dish, country, and mode combination.
+ *
+ * Flow:
+ * 1. Parse request body
+ * 2. Validate country name against valid countries list (fail fast)
+ * 3. Validate dish name and mode
+ * 4. Check cache for valid entry (not expired) for the dish, country, and mode
+ * 5. If cache hit: return cached recipe immediately
+ * 6. If cache miss or expired: query OpenAI, cache result, return recipe
  */
 export async function POST(request: NextRequest): Promise<NextResponse<RecipeApiResponse>> {
   try {
@@ -81,7 +90,22 @@ export async function POST(request: NextRequest): Promise<NextResponse<RecipeApi
       );
     }
 
-    const countryName = country.trim();
+    // Validate country against valid countries list (fail fast - before cache check)
+    const validation = await validateCountry(country);
+    if (!validation.isValid) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: {
+            message: validation.error || 'Country name is required',
+          },
+        },
+        { status: 400 }
+      );
+    }
+
+    // Use validated and trimmed country name
+    const countryName = validation.countryName;
     const normalizedDishName = dishName.trim();
     const searchMode: SearchMode = mode || 'fast';
 

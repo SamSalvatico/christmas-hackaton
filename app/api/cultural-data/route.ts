@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { cache } from '@/lib/utils/cache';
 import { queryCulturalDataWithRetry } from '@/lib/api/openai-service';
 import { searchSpotifyForCarol } from '@/lib/api/spotify-service';
+import { validateCountry } from '@/lib/api/countries-service';
 import type {
   CulturalDataApiRequest,
   CulturalDataApiResponse,
@@ -34,23 +35,24 @@ function getCacheKey(countryName: string, mode: SearchMode = 'fast'): string {
  * Response: { success: true, data: CountryCulturalData } | { success: false, error: { message: string } }
  *
  * Flow:
- * 1. Validate request body contains non-empty country field
- * 2. Check cache for valid entry (not expired) for the country
- * 3. If cache hit: return cached data immediately
- * 4. If cache miss or expired:
+ * 1. Parse request body
+ * 2. Validate country name against valid countries list (fail fast)
+ * 3. Check cache for valid entry (not expired) for the country
+ * 4. If cache hit: return cached data immediately
+ * 5. If cache miss or expired:
  *    - Query OpenAI with combined prompt (dishes + carol)
  *    - Parse and validate JSON response
  *    - If invalid: retry with refined query (max 1 retry)
  *    - If valid: store in cache with 20-minute TTL, return data
  *    - If still invalid after retry: return error (do not cache)
- * 5. Handle errors gracefully with user-friendly messages
- * 6. Gracefully handle missing carol (dishes still returned if valid)
+ * 6. Handle errors gracefully with user-friendly messages
+ * 7. Gracefully handle missing carol (dishes still returned if valid)
  */
 export async function POST(request: NextRequest) {
   try {
     // Parse and validate request body
     const body: CulturalDataApiRequest = await request.json();
-
+    
     if (!body.country || typeof body.country !== 'string' || body.country.trim().length === 0) {
       return NextResponse.json<CulturalDataApiResponse>(
         {
@@ -63,7 +65,22 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const countryName = body.country.trim();
+    // Validate country against valid countries list (fail fast - before cache check)
+    const validation = await validateCountry(body.country);
+    if (!validation.isValid) {
+      return NextResponse.json<CulturalDataApiResponse>(
+        {
+          success: false,
+          error: {
+            message: validation.error || 'Country name is required',
+          },
+        },
+        { status: 400 }
+      );
+    }
+
+    // Use validated and trimmed country name
+    const countryName = validation.countryName;
     const mode: SearchMode = body.mode || 'fast';
 
     // Check cache for valid entry

@@ -6,6 +6,7 @@ import type {
   CulturalDataApiRequest,
   CulturalDataApiResponse,
   CountryCulturalData,
+  SearchMode,
 } from '@/lib/types/cultural-data';
 
 /**
@@ -16,10 +17,11 @@ const CACHE_TTL = 20 * 60 * 1000; // 1,200,000 milliseconds
 /**
  * Get cache key for a country's cultural data
  * @param countryName - Name of the country
- * @returns Cache key string
+ * @param mode - Search mode ('fast' or 'detailed'), defaults to 'fast' for backward compatibility
+ * @returns Cache key string in format: cultural-data:{country}:{mode}
  */
-function getCacheKey(countryName: string): string {
-  return `cultural-data:${countryName.toLowerCase()}`;
+function getCacheKey(countryName: string, mode: SearchMode = 'fast'): string {
+  return `cultural-data:${countryName.toLowerCase()}:${mode}`;
 }
 
 /**
@@ -62,9 +64,10 @@ export async function POST(request: NextRequest) {
     }
 
     const countryName = body.country.trim();
+    const mode: SearchMode = body.mode || 'fast';
 
     // Check cache for valid entry
-    const cacheKey = getCacheKey(countryName);
+    const cacheKey = getCacheKey(countryName, mode);
     const cachedData = cache.get<CountryCulturalData>(cacheKey);
     if (cachedData) {
       // Cache hit - return cached data (includes spotifyUrl if previously searched)
@@ -76,7 +79,7 @@ export async function POST(request: NextRequest) {
 
     // Cache miss or expired - query OpenAI
     try {
-      const culturalData = await queryCulturalDataWithRetry(countryName);
+      const culturalData = await queryCulturalDataWithRetry(countryName, mode);
 
       // Search Spotify for carol if available
       let spotifyUrl: string | null = null;

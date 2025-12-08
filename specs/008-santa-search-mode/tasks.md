@@ -48,9 +48,9 @@ This feature allows users to choose between "Fast search" (gpt-3.5-turbo) and "D
 
 ### Tasks
 
-- [ ] T001 Create SearchMode type definition in `lib/types/cultural-data.ts`
-- [ ] T002 [P] Create MODEL_MAP constant mapping SearchMode to OpenAI model names in `lib/api/openai-service.ts`
-- [ ] T003 [P] Extend CulturalDataApiRequest interface with optional mode parameter in `lib/types/cultural-data.ts`
+- [x] T001 Create SearchMode type definition in `lib/types/cultural-data.ts`
+- [x] T002 [P] Create MODEL_MAP constant mapping SearchMode to OpenAI model names in `lib/api/openai-service.ts`
+- [x] T003 [P] Extend CulturalDataApiRequest interface with optional mode parameter in `lib/types/cultural-data.ts`
 
 ---
 
@@ -62,8 +62,8 @@ This feature allows users to choose between "Fast search" (gpt-3.5-turbo) and "D
 
 ### Tasks
 
-- [ ] T004 Update getCacheKey function to accept mode parameter in `app/api/cultural-data/route.ts`
-- [ ] T005 [P] Add JSDoc documentation for updated getCacheKey function in `app/api/cultural-data/route.ts`
+- [x] T004 Update getCacheKey function to accept mode parameter in `app/api/cultural-data/route.ts`
+- [x] T005 [P] Add JSDoc documentation for updated getCacheKey function in `app/api/cultural-data/route.ts`
 
 ---
 
@@ -83,14 +83,14 @@ This feature allows users to choose between "Fast search" (gpt-3.5-turbo) and "D
 
 ### Tasks
 
-- [ ] T006 [US1] Create SearchModeSelector component in `components/features/search-mode-selector.tsx`
-- [ ] T007 [US1] Implement mode selection UI using HeroUI Select component in `components/features/search-mode-selector.tsx`
-- [ ] T008 [US1] Add props interface SearchModeSelectorProps with selectedMode and onModeChange in `components/features/search-mode-selector.tsx`
-- [ ] T009 [US1] Set default selected mode to 'fast' in SearchModeSelector component in `components/features/search-mode-selector.tsx`
-- [ ] T010 [US1] Add selectedMode state to HomePage component in `app/page.tsx`
-- [ ] T011 [US1] Integrate SearchModeSelector component below CountryDropdown in `app/page.tsx`
-- [ ] T012 [US1] Connect SearchModeSelector onModeChange callback to update selectedMode state in `app/page.tsx`
-- [ ] T013 [US1] Style SearchModeSelector to match existing UI patterns in `components/features/search-mode-selector.tsx`
+- [x] T006 [US1] Create SearchModeSelector component in `components/features/search-mode-selector.tsx`
+- [x] T007 [US1] Implement mode selection UI using HeroUI Select component in `components/features/search-mode-selector.tsx`
+- [x] T008 [US1] Add props interface SearchModeSelectorProps with selectedMode and onModeChange in `components/features/search-mode-selector.tsx`
+- [x] T009 [US1] Set default selected mode to 'fast' in SearchModeSelector component in `components/features/search-mode-selector.tsx`
+- [x] T010 [US1] Add selectedMode state to HomePage component in `app/page.tsx`
+- [x] T011 [US1] Integrate SearchModeSelector component below CountryDropdown in `app/page.tsx`
+- [x] T012 [US1] Connect SearchModeSelector onModeChange callback to update selectedMode state in `app/page.tsx`
+- [x] T013 [US1] Style SearchModeSelector to match existing UI patterns in `components/features/search-mode-selector.tsx`
 
 ---
 
@@ -109,15 +109,15 @@ This feature allows users to choose between "Fast search" (gpt-3.5-turbo) and "D
 
 ### Tasks
 
-- [ ] T014 [US2] Update queryDishesAndCarolForCountry function to accept model parameter in `lib/api/openai-service.ts`
-- [ ] T015 [US2] Update queryCulturalDataWithRetry function to accept mode parameter in `lib/api/openai-service.ts`
-- [ ] T016 [US2] Map mode to model using MODEL_MAP in queryCulturalDataWithRetry function in `lib/api/openai-service.ts`
-- [ ] T017 [US2] Update API route to extract mode parameter from request body in `app/api/cultural-data/route.ts`
-- [ ] T018 [US2] Default mode to 'fast' if not provided in API route in `app/api/cultural-data/route.ts`
-- [ ] T019 [US2] Pass mode parameter to queryCulturalDataWithRetry function in `app/api/cultural-data/route.ts`
-- [ ] T020 [US2] Update cache key generation to include mode in API route in `app/api/cultural-data/route.ts`
-- [ ] T021 [US2] Update fetchCulturalData function to include mode parameter in request body in `app/page.tsx`
-- [ ] T022 [US2] Pass selectedMode state to fetchCulturalData function call in `app/page.tsx`
+- [x] T014 [US2] Update queryDishesAndCarolForCountry function to accept model parameter in `lib/api/openai-service.ts`
+- [x] T015 [US2] Update queryCulturalDataWithRetry function to accept mode parameter in `lib/api/openai-service.ts`
+- [x] T016 [US2] Map mode to model using MODEL_MAP in queryCulturalDataWithRetry function in `lib/api/openai-service.ts`
+- [x] T017 [US2] Update API route to extract mode parameter from request body in `app/api/cultural-data/route.ts`
+- [x] T018 [US2] Default mode to 'fast' if not provided in API route in `app/api/cultural-data/route.ts`
+- [x] T019 [US2] Pass mode parameter to queryCulturalDataWithRetry function in `app/api/cultural-data/route.ts`
+- [x] T020 [US2] Update cache key generation to include mode in API route in `app/api/cultural-data/route.ts`
+- [x] T021 [US2] Update fetchCulturalData function to include mode parameter in request body in `app/page.tsx`
+- [x] T022 [US2] Pass selectedMode state to fetchCulturalData function call in `app/page.tsx`
 
 ---
 
@@ -137,9 +137,9 @@ This feature allows users to choose between "Fast search" (gpt-3.5-turbo) and "D
 
 ### Tasks
 
-- [ ] T023 [US3] Verify o4-mini model name is correct in MODEL_MAP constant in `lib/api/openai-service.ts`
-- [ ] T024 [US3] Update MODEL_MAP to use correct detailed mode model name if needed in `lib/api/openai-service.ts`
-- [ ] T025 [US3] Test detailed mode returns more comprehensive responses than fast mode (manual verification)
+- [x] T023 [US3] Verify o4-mini model name is correct in MODEL_MAP constant in `lib/api/openai-service.ts`
+- [x] T024 [US3] Update MODEL_MAP to use correct detailed mode model name if needed in `lib/api/openai-service.ts`
+- [x] T025 [US3] Test detailed mode returns more comprehensive responses than fast mode (manual verification)
 
 **Note**: Most implementation for US3 is shared with US2. The model selection logic already handles both modes. This phase focuses on verification and model name confirmation.
 
@@ -160,12 +160,12 @@ This feature allows users to choose between "Fast search" (gpt-3.5-turbo) and "D
 
 ### Tasks
 
-- [ ] T026 [US4] Verify cache key format includes mode: `cultural-data:{country}:{mode}` in `app/api/cultural-data/route.ts`
-- [ ] T027 [US4] Test cache isolation: search same country in fast mode, verify cache key in `app/api/cultural-data/route.ts`
-- [ ] T028 [US4] Test cache isolation: search same country in detailed mode, verify different cache key in `app/api/cultural-data/route.ts`
-- [ ] T029 [US4] Test cache isolation: verify both modes can have cached results simultaneously in `app/api/cultural-data/route.ts`
-- [ ] T030 [US4] Test cache isolation: verify fast mode doesn't return detailed mode cached data in `app/api/cultural-data/route.ts`
-- [ ] T031 [US4] Test cache isolation: verify detailed mode doesn't return fast mode cached data in `app/api/cultural-data/route.ts`
+- [x] T026 [US4] Verify cache key format includes mode: `cultural-data:{country}:{mode}` in `app/api/cultural-data/route.ts`
+- [x] T027 [US4] Test cache isolation: search same country in fast mode, verify cache key in `app/api/cultural-data/route.ts`
+- [x] T028 [US4] Test cache isolation: search same country in detailed mode, verify different cache key in `app/api/cultural-data/route.ts`
+- [x] T029 [US4] Test cache isolation: verify both modes can have cached results simultaneously in `app/api/cultural-data/route.ts`
+- [x] T030 [US4] Test cache isolation: verify fast mode doesn't return detailed mode cached data in `app/api/cultural-data/route.ts`
+- [x] T031 [US4] Test cache isolation: verify detailed mode doesn't return fast mode cached data in `app/api/cultural-data/route.ts`
 
 **Note**: Cache isolation is primarily implemented in Phase 4 (T020). This phase focuses on verification and testing.
 
@@ -179,16 +179,16 @@ This feature allows users to choose between "Fast search" (gpt-3.5-turbo) and "D
 
 ### Tasks
 
-- [ ] T032 Update error handling to handle mode-specific errors gracefully in `app/api/cultural-data/route.ts`
-- [ ] T033 Add loading feedback that indicates detailed mode may take longer in `app/page.tsx`
-- [ ] T034 Verify backward compatibility: API calls without mode parameter default to fast mode in `app/api/cultural-data/route.ts`
-- [ ] T035 Test mode switching: user can change mode and search again with new mode in `app/page.tsx`
-- [ ] T036 Verify mode selection persists during session until changed or page refresh in `app/page.tsx`
-- [ ] T037 Add JSDoc comments for all new functions and components
-- [ ] T038 Verify all TypeScript types are properly exported and imported
-- [ ] T039 Test complete flow: select country → select mode → search → view results
-- [ ] T040 Verify cache TTL is 20 minutes for both modes in `app/api/cultural-data/route.ts`
-- [ ] T041 Test error scenarios: invalid mode, missing country, API failures
+- [x] T032 Update error handling to handle mode-specific errors gracefully in `app/api/cultural-data/route.ts`
+- [x] T033 Add loading feedback that indicates detailed mode may take longer in `app/page.tsx`
+- [x] T034 Verify backward compatibility: API calls without mode parameter default to fast mode in `app/api/cultural-data/route.ts`
+- [x] T035 Test mode switching: user can change mode and search again with new mode in `app/page.tsx`
+- [x] T036 Verify mode selection persists during session until changed or page refresh in `app/page.tsx`
+- [x] T037 Add JSDoc comments for all new functions and components
+- [x] T038 Verify all TypeScript types are properly exported and imported
+- [x] T039 Test complete flow: select country → select mode → search → view results
+- [x] T040 Verify cache TTL is 20 minutes for both modes in `app/api/cultural-data/route.ts`
+- [x] T041 Test error scenarios: invalid mode, missing country, API failures
 
 ---
 

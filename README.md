@@ -81,6 +81,7 @@ This application was built using **Speckit** (Spec-Driven Development) with **Cu
    - `005-spotify-carol-link`: Spotify integration for carols
    - `006-improve-api-naming`: API improvements
    - `007-christmas-home-redesign`: UI/UX enhancements
+   - `008-santa-search-mode`: Select model to search with
 
 Each specification includes detailed documentation, contracts, and checklists that guided the implementation process. This approach ensured consistency, maintainability, and clear documentation throughout the development lifecycle.
 

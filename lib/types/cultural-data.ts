@@ -3,6 +3,11 @@
  */
 
 /**
+ * Search mode type representing the user's choice of response mode
+ */
+export type SearchMode = 'fast' | 'detailed';
+
+/**
  * Dish entity representing a famous dish from a country
  */
 export interface Dish {
@@ -59,6 +64,8 @@ export interface CountryCulturalData {
 export interface CulturalDataApiRequest {
   /** Country name to query cultural data for */
   country: string;
+  /** Optional search mode - defaults to 'fast' if not provided */
+  mode?: SearchMode;
 }
 
 /**

@@ -47,9 +47,9 @@ This feature refactors the countries API to extract fetch and cache logic into a
 
 ### Tasks
 
-- [ ] T001 Create ValidationResult interface in `lib/types/countries.ts`
-- [ ] T002 [P] Add JSDoc documentation for ValidationResult interface in `lib/types/countries.ts`
-- [ ] T003 [P] Export ValidationResult interface from `lib/types/countries.ts`
+- [x] T001 Create ValidationResult interface in `lib/types/countries.ts`
+- [x] T002 [P] Add JSDoc documentation for ValidationResult interface in `lib/types/countries.ts`
+- [x] T003 [P] Export ValidationResult interface from `lib/types/countries.ts`
 
 ---
 
@@ -61,39 +61,39 @@ This feature refactors the countries API to extract fetch and cache logic into a
 
 ### Tasks
 
-- [ ] T004 Create countries-service.ts file in `lib/api/countries-service.ts`
-- [ ] T005 [P] Import cache utility and types in `lib/api/countries-service.ts`
-- [ ] T006 [P] Define COUNTRIES_CACHE_KEY constant ('countries') in `lib/api/countries-service.ts`
-- [ ] T007 [P] Define CACHE_TTL constant (10 minutes) in `lib/api/countries-service.ts`
-- [ ] T008 [P] Define REST_COUNTRIES_URL constant in `lib/api/countries-service.ts`
-- [ ] T009 [P] Define REQUEST_TIMEOUT constant (10 seconds) in `lib/api/countries-service.ts`
-- [ ] T010 Implement fetchCountriesFromAPI function in `lib/api/countries-service.ts`
-- [ ] T011 [P] Add error handling for timeout in fetchCountriesFromAPI in `lib/api/countries-service.ts`
-- [ ] T012 [P] Add error handling for non-OK responses in fetchCountriesFromAPI in `lib/api/countries-service.ts`
-- [ ] T013 [P] Implement country name extraction (name.common) in fetchCountriesFromAPI in `lib/api/countries-service.ts`
-- [ ] T014 [P] Implement filtering of empty country names in fetchCountriesFromAPI in `lib/api/countries-service.ts`
-- [ ] T015 [P] Implement alphabetical sorting of countries in fetchCountriesFromAPI in `lib/api/countries-service.ts`
-- [ ] T016 Implement getCountriesList function in `lib/api/countries-service.ts`
-- [ ] T017 [P] Add cache check logic in getCountriesList in `lib/api/countries-service.ts`
-- [ ] T018 [P] Add cache set logic with TTL in getCountriesList in `lib/api/countries-service.ts`
-- [ ] T019 [P] Add expired cache fallback logic in getCountriesList in `lib/api/countries-service.ts`
-- [ ] T020 [P] Add error handling for countries list unavailable in getCountriesList in `lib/api/countries-service.ts`
-- [ ] T021 Create normalized lookup set creation function in `lib/api/countries-service.ts`
-- [ ] T022 [P] Implement normalized lookup caching logic in `lib/api/countries-service.ts`
-- [ ] T023 Implement validateCountry function in `lib/api/countries-service.ts`
-- [ ] T024 [P] Add input validation (null/undefined check) in validateCountry in `lib/api/countries-service.ts`
-- [ ] T025 [P] Add input type validation (string check) in validateCountry in `lib/api/countries-service.ts`
-- [ ] T026 [P] Add whitespace trimming in validateCountry in `lib/api/countries-service.ts`
-- [ ] T027 [P] Add empty string check in validateCountry in `lib/api/countries-service.ts`
-- [ ] T028 [P] Add case-insensitive normalization in validateCountry in `lib/api/countries-service.ts`
-- [ ] T029 [P] Add countries list retrieval in validateCountry in `lib/api/countries-service.ts`
-- [ ] T030 [P] Add normalized lookup creation/usage in validateCountry in `lib/api/countries-service.ts`
-- [ ] T031 [P] Add validation result construction in validateCountry in `lib/api/countries-service.ts`
-- [ ] T032 [P] Add error message formatting for invalid countries in validateCountry in `lib/api/countries-service.ts`
-- [ ] T033 [P] Add error handling for countries list unavailable in validateCountry in `lib/api/countries-service.ts`
-- [ ] T034 Implement isCountryValid function in `lib/api/countries-service.ts`
-- [ ] T035 [P] Add JSDoc documentation for all service functions in `lib/api/countries-service.ts`
-- [ ] T036 [P] Export all service functions and constants from `lib/api/countries-service.ts`
+- [x] T004 Create countries-service.ts file in `lib/api/countries-service.ts`
+- [x] T005 [P] Import cache utility and types in `lib/api/countries-service.ts`
+- [x] T006 [P] Define COUNTRIES_CACHE_KEY constant ('countries') in `lib/api/countries-service.ts`
+- [x] T007 [P] Define CACHE_TTL constant (10 minutes) in `lib/api/countries-service.ts`
+- [x] T008 [P] Define REST_COUNTRIES_URL constant in `lib/api/countries-service.ts`
+- [x] T009 [P] Define REQUEST_TIMEOUT constant (10 seconds) in `lib/api/countries-service.ts`
+- [x] T010 Implement fetchCountriesFromAPI function in `lib/api/countries-service.ts`
+- [x] T011 [P] Add error handling for timeout in fetchCountriesFromAPI in `lib/api/countries-service.ts`
+- [x] T012 [P] Add error handling for non-OK responses in fetchCountriesFromAPI in `lib/api/countries-service.ts`
+- [x] T013 [P] Implement country name extraction (name.common) in fetchCountriesFromAPI in `lib/api/countries-service.ts`
+- [x] T014 [P] Implement filtering of empty country names in fetchCountriesFromAPI in `lib/api/countries-service.ts`
+- [x] T015 [P] Implement alphabetical sorting of countries in fetchCountriesFromAPI in `lib/api/countries-service.ts`
+- [x] T016 Implement getCountriesList function in `lib/api/countries-service.ts`
+- [x] T017 [P] Add cache check logic in getCountriesList in `lib/api/countries-service.ts`
+- [x] T018 [P] Add cache set logic with TTL in getCountriesList in `lib/api/countries-service.ts`
+- [x] T019 [P] Add expired cache fallback logic in getCountriesList in `lib/api/countries-service.ts`
+- [x] T020 [P] Add error handling for countries list unavailable in getCountriesList in `lib/api/countries-service.ts`
+- [x] T021 Create normalized lookup set creation function in `lib/api/countries-service.ts`
+- [x] T022 [P] Implement normalized lookup caching logic in `lib/api/countries-service.ts`
+- [x] T023 Implement validateCountry function in `lib/api/countries-service.ts`
+- [x] T024 [P] Add input validation (null/undefined check) in validateCountry in `lib/api/countries-service.ts`
+- [x] T025 [P] Add input type validation (string check) in validateCountry in `lib/api/countries-service.ts`
+- [x] T026 [P] Add whitespace trimming in validateCountry in `lib/api/countries-service.ts`
+- [x] T027 [P] Add empty string check in validateCountry in `lib/api/countries-service.ts`
+- [x] T028 [P] Add case-insensitive normalization in validateCountry in `lib/api/countries-service.ts`
+- [x] T029 [P] Add countries list retrieval in validateCountry in `lib/api/countries-service.ts`
+- [x] T030 [P] Add normalized lookup creation/usage in validateCountry in `lib/api/countries-service.ts`
+- [x] T031 [P] Add validation result construction in validateCountry in `lib/api/countries-service.ts`
+- [x] T032 [P] Add error message formatting for invalid countries in validateCountry in `lib/api/countries-service.ts`
+- [x] T033 [P] Add error handling for countries list unavailable in validateCountry in `lib/api/countries-service.ts`
+- [x] T034 Implement isCountryValid function in `lib/api/countries-service.ts`
+- [x] T035 [P] Add JSDoc documentation for all service functions in `lib/api/countries-service.ts`
+- [x] T036 [P] Export all service functions and constants from `lib/api/countries-service.ts`
 
 ---
 
@@ -105,15 +105,15 @@ This feature refactors the countries API to extract fetch and cache logic into a
 
 ### Tasks
 
-- [ ] T037 Update imports in `app/api/countries/route.ts` to use getCountriesList from countries-service
-- [ ] T038 [P] Remove fetchCountriesFromAPI function from `app/api/countries/route.ts`
-- [ ] T039 [P] Remove cache get/set logic from `app/api/countries/route.ts`
-- [ ] T040 [P] Remove COUNTRIES_CACHE_KEY, CACHE_TTL, REQUEST_TIMEOUT constants from `app/api/countries/route.ts`
-- [ ] T041 [P] Remove REST_COUNTRIES_URL constant from `app/api/countries/route.ts`
-- [ ] T042 Replace cache check logic with getCountriesList() call in GET handler in `app/api/countries/route.ts`
-- [ ] T043 [P] Update error handling to work with service function in GET handler in `app/api/countries/route.ts`
-- [ ] T044 [P] Maintain same response format and error messages in GET handler in `app/api/countries/route.ts`
-- [ ] T045 [P] Add JSDoc comment noting refactoring to use service in `app/api/countries/route.ts`
+- [x] T037 Update imports in `app/api/countries/route.ts` to use getCountriesList from countries-service
+- [x] T038 [P] Remove fetchCountriesFromAPI function from `app/api/countries/route.ts`
+- [x] T039 [P] Remove cache get/set logic from `app/api/countries/route.ts`
+- [x] T040 [P] Remove COUNTRIES_CACHE_KEY, CACHE_TTL, REQUEST_TIMEOUT constants from `app/api/countries/route.ts`
+- [x] T041 [P] Remove REST_COUNTRIES_URL constant from `app/api/countries/route.ts`
+- [x] T042 Replace cache check logic with getCountriesList() call in GET handler in `app/api/countries/route.ts`
+- [x] T043 [P] Update error handling to work with service function in GET handler in `app/api/countries/route.ts`
+- [x] T044 [P] Maintain same response format and error messages in GET handler in `app/api/countries/route.ts`
+- [x] T045 [P] Add JSDoc comment noting refactoring to use service in `app/api/countries/route.ts`
 
 ---
 
@@ -133,16 +133,16 @@ This feature refactors the countries API to extract fetch and cache logic into a
 
 ### Tasks
 
-- [ ] T046 [US1] Import validateCountry from countries-service in `app/api/cultural-data/route.ts`
-- [ ] T047 [US1] [P] Import ValidationResult type in `app/api/cultural-data/route.ts`
-- [ ] T048 [US1] Add country validation call after parsing request body in POST handler in `app/api/cultural-data/route.ts`
-- [ ] T049 [US1] [P] Add validation result check (isValid) in POST handler in `app/api/cultural-data/route.ts`
-- [ ] T050 [US1] [P] Add 400 error response for invalid countries in POST handler in `app/api/cultural-data/route.ts`
-- [ ] T051 [US1] [P] Use validation.error for error message in error response in POST handler in `app/api/cultural-data/route.ts`
-- [ ] T052 [US1] [P] Ensure validation occurs before cache check in POST handler in `app/api/cultural-data/route.ts`
-- [ ] T053 [US1] [P] Ensure validation occurs before external API calls in POST handler in `app/api/cultural-data/route.ts`
-- [ ] T054 [US1] [P] Use validation.countryName (trimmed) for subsequent processing in POST handler in `app/api/cultural-data/route.ts`
-- [ ] T055 [US1] [P] Add JSDoc comment documenting validation behavior in POST handler in `app/api/cultural-data/route.ts`
+- [x] T046 [US1] Import validateCountry from countries-service in `app/api/cultural-data/route.ts`
+- [x] T047 [US1] [P] Import ValidationResult type in `app/api/cultural-data/route.ts`
+- [x] T048 [US1] Add country validation call after parsing request body in POST handler in `app/api/cultural-data/route.ts`
+- [x] T049 [US1] [P] Add validation result check (isValid) in POST handler in `app/api/cultural-data/route.ts`
+- [x] T050 [US1] [P] Add 400 error response for invalid countries in POST handler in `app/api/cultural-data/route.ts`
+- [x] T051 [US1] [P] Use validation.error for error message in error response in POST handler in `app/api/cultural-data/route.ts`
+- [x] T052 [US1] [P] Ensure validation occurs before cache check in POST handler in `app/api/cultural-data/route.ts`
+- [x] T053 [US1] [P] Ensure validation occurs before external API calls in POST handler in `app/api/cultural-data/route.ts`
+- [x] T054 [US1] [P] Use validation.countryName (trimmed) for subsequent processing in POST handler in `app/api/cultural-data/route.ts`
+- [x] T055 [US1] [P] Add JSDoc comment documenting validation behavior in POST handler in `app/api/cultural-data/route.ts`
 
 ---
 
@@ -162,16 +162,16 @@ This feature refactors the countries API to extract fetch and cache logic into a
 
 ### Tasks
 
-- [ ] T056 [US2] Import validateCountry from countries-service in `app/api/recipe/route.ts`
-- [ ] T057 [US2] [P] Import ValidationResult type in `app/api/recipe/route.ts`
-- [ ] T058 [US2] Add country validation call after parsing request body in POST handler in `app/api/recipe/route.ts`
-- [ ] T059 [US2] [P] Add validation result check (isValid) in POST handler in `app/api/recipe/route.ts`
-- [ ] T060 [US2] [P] Add 400 error response for invalid countries in POST handler in `app/api/recipe/route.ts`
-- [ ] T061 [US2] [P] Use validation.error for error message in error response in POST handler in `app/api/recipe/route.ts`
-- [ ] T062 [US2] [P] Ensure validation occurs before cache check in POST handler in `app/api/recipe/route.ts`
-- [ ] T063 [US2] [P] Ensure validation occurs before external API calls in POST handler in `app/api/recipe/route.ts`
-- [ ] T064 [US2] [P] Use validation.countryName (trimmed) for subsequent processing in POST handler in `app/api/recipe/route.ts`
-- [ ] T065 [US2] [P] Add JSDoc comment documenting validation behavior in POST handler in `app/api/recipe/route.ts`
+- [x] T056 [US2] Import validateCountry from countries-service in `app/api/recipe/route.ts`
+- [x] T057 [US2] [P] Import ValidationResult type in `app/api/recipe/route.ts`
+- [x] T058 [US2] Add country validation call after parsing request body in POST handler in `app/api/recipe/route.ts`
+- [x] T059 [US2] [P] Add validation result check (isValid) in POST handler in `app/api/recipe/route.ts`
+- [x] T060 [US2] [P] Add 400 error response for invalid countries in POST handler in `app/api/recipe/route.ts`
+- [x] T061 [US2] [P] Use validation.error for error message in error response in POST handler in `app/api/recipe/route.ts`
+- [x] T062 [US2] [P] Ensure validation occurs before cache check in POST handler in `app/api/recipe/route.ts`
+- [x] T063 [US2] [P] Ensure validation occurs before external API calls in POST handler in `app/api/recipe/route.ts`
+- [x] T064 [US2] [P] Use validation.countryName (trimmed) for subsequent processing in POST handler in `app/api/recipe/route.ts`
+- [x] T065 [US2] [P] Add JSDoc comment documenting validation behavior in POST handler in `app/api/recipe/route.ts`
 
 ---
 
@@ -183,18 +183,18 @@ This feature refactors the countries API to extract fetch and cache logic into a
 
 ### Tasks
 
-- [ ] T066 Verify error message consistency across `/cultural-data` and `/recipe` endpoints
-- [ ] T067 [P] Verify case-insensitive matching works for all valid country names
-- [ ] T068 [P] Verify whitespace trimming works correctly in both endpoints
-- [ ] T069 [P] Verify empty country handling is consistent across endpoints
-- [ ] T070 [P] Verify countries list unavailable handling works correctly
-- [ ] T071 [P] Test validation performance (should complete within 50ms for 95% of requests)
-- [ ] T072 [P] Test error response time (should return within 100ms)
-- [ ] T073 [P] Verify backward compatibility of `/countries` endpoint (same response format)
-- [ ] T074 [P] Verify no regressions in existing `/cultural-data` functionality for valid countries
-- [ ] T075 [P] Verify no regressions in existing `/recipe` functionality for valid countries
-- [ ] T076 [P] Review and update JSDoc comments for clarity and completeness
-- [ ] T077 [P] Verify all TypeScript types are properly exported and used
+- [x] T066 Verify error message consistency across `/cultural-data` and `/recipe` endpoints
+- [x] T067 [P] Verify case-insensitive matching works for all valid country names
+- [x] T068 [P] Verify whitespace trimming works correctly in both endpoints
+- [x] T069 [P] Verify empty country handling is consistent across endpoints
+- [x] T070 [P] Verify countries list unavailable handling works correctly
+- [x] T071 [P] Test validation performance (should complete within 50ms for 95% of requests)
+- [x] T072 [P] Test error response time (should return within 100ms)
+- [x] T073 [P] Verify backward compatibility of `/countries` endpoint (same response format)
+- [x] T074 [P] Verify no regressions in existing `/cultural-data` functionality for valid countries
+- [x] T075 [P] Verify no regressions in existing `/recipe` functionality for valid countries
+- [x] T076 [P] Review and update JSDoc comments for clarity and completeness
+- [x] T077 [P] Verify all TypeScript types are properly exported and used
 
 ---
 

@@ -39,7 +39,7 @@ export function SantaSearchButton({
       size="lg"
       isDisabled={!selectedCountry}
       onPress={handleClick}
-      className="min-w-[120px] min-h-[44px] font-semibold"
+      className="min-w-[120px] min-h-[44px] font-semibold mb-6"
       style={{
         backgroundColor: selectedCountry ? christmasColors.red : undefined,
         color: selectedCountry ? christmasColors.white : undefined,

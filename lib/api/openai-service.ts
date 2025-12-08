@@ -93,7 +93,7 @@ async function queryDishesAndCarolForCountry(
 
   try {
     const response = await openai.chat.completions.create({
-      model: 'o4-mini',
+      model: 'gpt-3.5-turbo',
       messages: [
         {
           role: 'user',

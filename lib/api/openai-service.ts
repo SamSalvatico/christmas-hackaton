@@ -9,6 +9,8 @@ import type {
   ChristmasCarol,
   CountryCulturalData,
   SearchMode,
+  Recipe,
+  RecipeStep,
 } from '@/lib/types/cultural-data';
 
 /**
@@ -391,4 +393,173 @@ export async function queryCulturalDataWithRetry(
   return parsedResponse;
 }
 
+/**
+ * Build structured prompt for recipe query with explicit JSON format requirements
+ * @param dishName - Name of the dish to get recipe for
+ * @param countryName - Name of the country where the dish originates
+ * @returns Structured prompt string
+ */
+export function buildRecipePrompt(dishName: string, countryName: string): string {
+  return `Provide a step-by-step recipe for "${dishName}" from ${countryName}.
+
+Format the recipe as a JSON object with this structure:
+{
+  "steps": [
+    {
+      "stepNumber": 1,
+      "instruction": "Step instruction text",
+      "details": "Optional additional details, tips, or timing information"
+    }
+  ]
+}
+
+Each step should be clear and actionable. Include preparation time, cooking time, and serving size if relevant.
+The recipe should be authentic to ${countryName} cuisine and Christmas traditions.
+The steps array must contain at least one step, and steps must be numbered sequentially starting from 1.`;
+}
+
+/**
+ * Query OpenAI API for recipe of a dish
+ * @param prompt - Prompt string to send to OpenAI
+ * @param model - OpenAI model name to use (e.g., 'gpt-3.5-turbo', 'o4-mini')
+ * @returns Parsed Recipe object from OpenAI response
+ * @throws Error if OpenAI API call fails or response is invalid
+ */
+async function queryRecipeForDish(
+  prompt: string,
+  model: string
+): Promise<Recipe> {
+  const openai = initializeOpenAIClient();
+
+  try {
+    const response = await openai.chat.completions.create({
+      model,
+      messages: [
+        {
+          role: 'user',
+          content: prompt,
+        },
+      ],
+      response_format: { type: 'json_object' },
+    });
+
+    const content = response.choices[0]?.message?.content;
+    if (!content) {
+      throw new Error('OpenAI API returned empty response');
+    }
+
+    // Parse JSON response
+    let parsedResponse: { steps?: RecipeStep[] };
+    try {
+      parsedResponse = JSON.parse(content);
+    } catch {
+      throw new Error('Invalid JSON response from OpenAI API');
+    }
+
+    // Validate response structure
+    if (!parsedResponse.steps || !Array.isArray(parsedResponse.steps)) {
+      throw new Error('Invalid recipe format: missing steps array');
+    }
+
+    if (parsedResponse.steps.length === 0) {
+      throw new Error('Invalid recipe format: steps array is empty');
+    }
+
+    // Validate each step
+    for (let i = 0; i < parsedResponse.steps.length; i++) {
+      const step = parsedResponse.steps[i];
+      if (!step.stepNumber || !step.instruction) {
+        throw new Error(`Invalid recipe format: step ${i + 1} is missing required fields`);
+      }
+      if (typeof step.stepNumber !== 'number' || step.stepNumber < 1) {
+        throw new Error(`Invalid recipe format: step ${i + 1} has invalid stepNumber`);
+      }
+      if (typeof step.instruction !== 'string' || step.instruction.trim().length === 0) {
+        throw new Error(`Invalid recipe format: step ${i + 1} has invalid instruction`);
+      }
+    }
+
+    return {
+      steps: parsedResponse.steps,
+    };
+  } catch (error) {
+    // Handle OpenAI API errors
+    if (error instanceof OpenAI.APIError) {
+      if (error.status === 429) {
+        throw new Error('Service is temporarily unavailable. Please try again in a moment.');
+      }
+      if (error.status === 401) {
+        throw new Error('Service configuration error. Please contact support.');
+      }
+      if (error.status === 500 || error.status === 503) {
+        throw new Error('Unable to connect to recipe service. Please try again later.');
+      }
+      throw new Error(`Unable to generate recipe: ${error.message}`);
+    }
+
+    // Re-throw validation errors
+    if (error instanceof Error) {
+      throw error;
+    }
+
+    throw new Error('Unable to generate recipe. Please try again later.');
+  }
+}
+
+/**
+ * Query recipe for a dish with retry logic
+ * @param dishName - Name of the dish to get recipe for
+ * @param countryName - Name of the country where the dish originates
+ * @param mode - Search mode ('fast' or 'detailed')
+ * @returns Recipe object with step-by-step instructions
+ * @throws Error if recipe generation fails after retries
+ */
+export async function queryRecipeWithRetry(
+  dishName: string,
+  countryName: string,
+  mode: SearchMode = 'fast'
+): Promise<Recipe> {
+  const model = MODEL_MAP[mode];
+  const prompt = buildRecipePrompt(dishName, countryName);
+
+  const maxRetries = 3;
+  let lastError: Error | null = null;
+
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      const recipe = await queryRecipeForDish(prompt, model);
+      
+      // Handle dishes without traditional recipes gracefully
+      if (!recipe.steps || recipe.steps.length === 0) {
+        throw new Error(
+          `Unable to generate a traditional recipe for "${dishName}" from ${countryName}. ` +
+          'This dish may not have a standard recipe format, or the information is not available.'
+        );
+      }
+      
+      return recipe;
+    } catch (error) {
+      lastError = error instanceof Error ? error : new Error('Unknown error occurred');
+
+      // Don't retry on validation errors or dishes without recipes
+      if (
+        lastError.message.includes('Invalid recipe format') ||
+        lastError.message.includes('Invalid JSON') ||
+        lastError.message.includes('Unable to generate a traditional recipe')
+      ) {
+        throw lastError;
+      }
+
+      // Don't retry on the last attempt
+      if (attempt === maxRetries) {
+        break;
+      }
+
+      // Wait before retrying (exponential backoff)
+      await new Promise((resolve) => setTimeout(resolve, 1000 * attempt));
+    }
+  }
+
+  throw lastError || new Error('Unable to generate recipe. Please try again later.');
+}
 

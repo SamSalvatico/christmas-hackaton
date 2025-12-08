@@ -7,11 +7,14 @@ import { SearchModeSelector } from '@/components/features/search-mode-selector';
 import { DishCard } from '@/components/features/dish-card';
 import { ChristmasSpinner } from '@/components/features/christmas-spinner';
 import { CarolLink } from '@/components/features/carol-link';
+import { RecipeModal } from '@/components/features/recipe-modal';
 import { ChristmasBaublesBackground } from '@/components/features/christmas-baubles-background';
 import type {
   CountryCulturalData,
   CulturalDataApiResponse,
   SearchMode,
+  Recipe,
+  RecipeApiResponse,
 } from '@/lib/types/cultural-data';
 import { christmasColors } from '@/lib/utils/christmas-theme';
 
@@ -35,12 +38,41 @@ async function fetchCulturalData(
   return response.json();
 }
 
+/**
+ * Fetch recipe for a dish from the API
+ * @param country - Country name where the dish originates
+ * @param dishName - Name of the dish to get recipe for
+ * @param mode - Search mode ('fast' or 'detailed')
+ */
+async function fetchRecipe(
+  country: string,
+  dishName: string,
+  mode: SearchMode
+): Promise<RecipeApiResponse> {
+  const response = await fetch('/api/recipe', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ country, dishName, mode }),
+  });
+
+  return response.json();
+}
+
 export default function HomePage() {
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
   const [selectedMode, setSelectedMode] = useState<SearchMode>('fast');
   const [culturalData, setCulturalData] = useState<CountryCulturalData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  
+  // Recipe modal state
+  const [recipeModalOpen, setRecipeModalOpen] = useState(false);
+  const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
+  const [selectedDishName, setSelectedDishName] = useState<string | null>(null);
+  const [isRecipeLoading, setIsRecipeLoading] = useState(false);
+  const [recipeError, setRecipeError] = useState<string | null>(null);
 
   /**
    * Handle cultural data search triggered by Santa Search button
@@ -76,6 +108,72 @@ export default function HomePage() {
       setCulturalData(null);
     } finally {
       setIsLoading(false);
+    }
+  }
+
+  /**
+   * Handle recipe click from dish card
+   * @param dishName - Name of the dish
+   * @param country - Country name where the dish originates
+   */
+  async function handleRecipeClick(dishName: string, country: string) {
+    // Close existing modal if open
+    if (recipeModalOpen) {
+      setRecipeModalOpen(false);
+    }
+    
+    // Set selected dish and open modal
+    setSelectedDishName(dishName);
+    setRecipeModalOpen(true);
+    setSelectedRecipe(null);
+    setRecipeError(null);
+    setIsRecipeLoading(true);
+    
+    try {
+      const result = await fetchRecipe(country, dishName, selectedMode);
+      
+      if (result.success && result.data) {
+        setSelectedRecipe(result.data);
+        setRecipeError(null);
+      } else if (!result.success && 'error' in result) {
+        setRecipeError(
+          result.error.message ||
+            'Unable to retrieve recipe. Please try again later.'
+        );
+        setSelectedRecipe(null);
+      } else {
+        setRecipeError('Unable to retrieve recipe. Please try again later.');
+        setSelectedRecipe(null);
+      }
+    } catch (err) {
+      setRecipeError(
+        err instanceof Error
+          ? err.message
+          : 'Unable to retrieve recipe. Please try again later.'
+      );
+      setSelectedRecipe(null);
+    } finally {
+      setIsRecipeLoading(false);
+    }
+  }
+
+  /**
+   * Handle recipe modal close
+   */
+  function handleRecipeModalClose() {
+    setRecipeModalOpen(false);
+    setSelectedRecipe(null);
+    setSelectedDishName(null);
+    setRecipeError(null);
+    setIsRecipeLoading(false);
+  }
+
+  /**
+   * Handle recipe retry
+   */
+  function handleRecipeRetry() {
+    if (selectedDishName && selectedCountry) {
+      handleRecipeClick(selectedDishName, selectedCountry);
     }
   }
 
@@ -175,7 +273,17 @@ export default function HomePage() {
                   }`}
                 >
                   {dishes.map(({ dish, type }) => (
-                    <DishCard key={`${dish.type}-${dish.name}`} dish={dish} dishType={type} />
+                    <DishCard
+                      key={`${dish.type}-${dish.name}`}
+                      dish={dish}
+                      dishType={type}
+                      onRecipeClick={(dishName) => {
+                        if (selectedCountry) {
+                          handleRecipeClick(dishName, selectedCountry);
+                        }
+                      }}
+                      selectedMode={selectedMode}
+                    />
                   ))}
                 </div>
               </div>
@@ -195,6 +303,17 @@ export default function HomePage() {
           </div>
         )}
       </div>
+
+      {/* Recipe Modal */}
+      <RecipeModal
+        isOpen={recipeModalOpen}
+        onClose={handleRecipeModalClose}
+        recipe={selectedRecipe}
+        dishName={selectedDishName || ''}
+        isLoading={isRecipeLoading}
+        error={recipeError}
+        onRetry={handleRecipeRetry}
+      />
     </main>
   );
 }

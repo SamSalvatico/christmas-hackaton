@@ -118,3 +118,80 @@ export type CulturalDataApiResponse =
   | CulturalDataApiSuccessResponse
   | CulturalDataApiErrorResponse;
 
+/**
+ * Recipe step entity representing a single step in a recipe's step-by-step instructions
+ */
+export interface RecipeStep {
+  /** Step number (1-based) */
+  stepNumber: number;
+  /** Main instruction for this step */
+  instruction: string;
+  /** Optional additional details, tips, or timing information */
+  details?: string;
+}
+
+/**
+ * Recipe entity representing a complete recipe with step-by-step instructions for a dish
+ */
+export interface Recipe {
+  /** Array of recipe steps in sequential order */
+  steps: RecipeStep[];
+}
+
+/**
+ * API request structure for recipe queries
+ */
+export interface RecipeApiRequest {
+  /** Country name where the dish originates */
+  country: string;
+  /** Name of the dish to get recipe for */
+  dishName: string;
+  /** Optional search mode - defaults to 'fast' if not provided */
+  mode?: SearchMode;
+}
+
+/**
+ * API success response structure for recipe queries
+ */
+export interface RecipeApiSuccessResponse {
+  success: true;
+  data: Recipe;
+}
+
+/**
+ * API error response structure for recipe queries
+ */
+export interface RecipeApiErrorResponse {
+  success: false;
+  error: {
+    message: string;
+  };
+}
+
+/**
+ * API response union type (success or error) for recipe queries
+ */
+export type RecipeApiResponse =
+  | RecipeApiSuccessResponse
+  | RecipeApiErrorResponse;
+
+/**
+ * Props for the RecipeModal React component
+ */
+export interface RecipeModalProps {
+  /** Whether the modal is open */
+  isOpen: boolean;
+  /** Callback when modal should be closed */
+  onClose: () => void;
+  /** Recipe data to display */
+  recipe: Recipe | null;
+  /** Dish name for modal header */
+  dishName: string;
+  /** Whether recipe is being loaded */
+  isLoading?: boolean;
+  /** Error message if recipe loading failed */
+  error?: string | null;
+  /** Callback to retry recipe loading */
+  onRetry?: () => void;
+}
+

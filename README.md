@@ -1,7 +1,10 @@
 # 🎄 Santa's Global Feast Finder
+# 🎄 Santa's Global Feast Finder
 
 A Next.js SSR application that helps you discover Christmas traditions, dishes, and carols from around the world, powered by AI.
+A Next.js SSR application that helps you discover Christmas traditions, dishes, and carols from around the world, powered by AI.
 
+## Getting Started
 ## Getting Started
 
 ### Prerequisites
@@ -20,7 +23,47 @@ Before you begin, ensure you have the following installed:
    git clone <repository-url>
    cd christmas-hackaton
    ```
+Before you begin, ensure you have the following installed:
 
+- **Node.js 24 or later** - [Download Node.js](https://nodejs.org/)
+- **npm or yarn** - Comes with Node.js
+- **OpenAI API Key** (optional for testing, required for full functionality) - [Get your API key](https://platform.openai.com/account/api-keys)
+- **Spotify Client ID and Secret** (required for Spotify carol links) - [Get your credentials](https://developer.spotify.com/dashboard)
+
+### Installation & Running
+
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd christmas-hackaton
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Set up environment variables** (optional for basic functionality)
+   ```bash
+   # Copy the sample environment file
+   cp .env.sample .env.local
+   
+   # Add your API keys
+   # OPENAI_API_KEY=sk-your-api-key-here
+   # SPOTIFY_CLIENT_ID=your-spotify-client-id
+   # SPOTIFY_CLIENT_SECRET=your-spotify-client-secret
+   ```
+   
+   **Getting Spotify Credentials:**
+   1. Go to [Spotify Developer Dashboard](https://developer.spotify.com/dashboard)
+   2. Log in and click **"Create App"**
+   3. Fill in app details (name, description)
+   4. Copy your **Client ID** and **Client Secret** (click "Show client secret" to reveal)
+
+4. **Start the development server**
+   ```bash
+   npm run dev
+   ```
 2. **Install dependencies**
    ```bash
    npm install
@@ -127,6 +170,8 @@ The application uses AI to provide accurate, culturally relevant information abo
 - **Language**: TypeScript 5.9.3 (strict mode)
 - **React**: 19.2.1
 - **Runtime**: Node.js 24
+- **Styling**: Tailwind CSS 4
+- **AI Integration**: OpenAI API
 - **Styling**: Tailwind CSS 4
 - **AI Integration**: OpenAI API
 

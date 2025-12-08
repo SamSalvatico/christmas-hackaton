@@ -66,7 +66,7 @@ export function RecipeModal({
       scrollBehavior="inside"
       aria-label={`Recipe for ${dishName}`}
     >
-      <ModalContent>
+      <ModalContent className="card-font">
         <ModalHeader>
           <h2
             className="text-2xl font-bold"
